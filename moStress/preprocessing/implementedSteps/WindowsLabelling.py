@@ -44,5 +44,3 @@ class WindowsLabelling(Steps):
         
         return featuresWindowsArray, targetsLabelsArray, discartedWindosCounter
     
-
-    

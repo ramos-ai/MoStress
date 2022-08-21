@@ -58,7 +58,9 @@ In progress...
 ## 5 Improvements
 
 1. Implement a resume report after the data preprocessing;
-2. Implement the k-fold validation to improve the results .
+2. Implement the k-fold validation to improve the results;
+3. Check if it is possible to lower the number of for loops;
+4. Implement unit tests to ensure secure changes.
 
 ## 6. Future Work
 

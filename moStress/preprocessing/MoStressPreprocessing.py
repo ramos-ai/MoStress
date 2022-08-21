@@ -40,8 +40,6 @@ class MoStressPreprocessing:
 
         # TODO: implement Resume Report that might be printed in the ende
 
-
-
     def _applyNormalization(self):
         Normalization(self).execute()
     
