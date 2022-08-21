@@ -1,0 +1,14 @@
+{
+    "features": ["ECG", "EMG", "EDA", "Temp", "Resp"],
+    "targets": "label_id",
+    "targetsClassesMapping": {
+        "1": "Baseline",
+        "2": "Stress",
+        "3": "Amusement"
+    },
+    "datasetSamplePeriod": 700,
+    "resamplingPeriod": 100,
+    "windowSizeInSeconds": 60,
+    "windowSlideStepInSeconds": 1,
+    "percentageCountingThreshold": 70
+}

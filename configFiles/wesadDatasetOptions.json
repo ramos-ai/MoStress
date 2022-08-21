@@ -1,0 +1,17 @@
+{
+    "Chest Physio Data": {
+        "subjects": [
+            "S5",
+            "S2"
+        ],
+        "stateCodes": {
+            "0": "Not Defined/Transient",
+            "1": "Baseline",
+            "2": "Stress",
+            "3": "Amusement",
+            "4": "Meditation",
+            "5": "Error/Not Labeled"
+        },
+        "signals": ["ECG", "EMG", "EDA", "Temp", "Resp"]
+    }
+}
