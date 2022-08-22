@@ -2,7 +2,20 @@
     "Chest Physio Data": {
         "subjects": [
             "S5",
-            "S2"
+            "S2",
+            "S3",
+            "S4",
+            "S17",
+            "S10",
+            "S11",
+            "S16",
+            "S8",
+            "S6",
+            "S7",
+            "S9",
+            "S13",
+            "S14",
+            "S15"
         ],
         "stateCodes": {
             "0": "Not Defined/Transient",

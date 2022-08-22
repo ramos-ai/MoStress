@@ -1,11 +1,19 @@
 from moStress.preprocessing.implementedSteps.Steps import Steps
 
 class Normalization(Steps):
+
     def __init__(self, moStressPreprocessing):
         self.moStressPreprocessing = moStressPreprocessing
+        self._hasNormalizationFinished = False
 
     def execute(self):
-        self.moStressPreprocessing.features = [ self._rollingZScore(data) for data in self.moStressPreprocessing.features ]
+        try:
+            if (not self._hasNormalizationFinished):
+                self.moStressPreprocessing.features = [ self._rollingZScore(data) for data in self.moStressPreprocessing.features ]
+                self._hasNormalizationFinished = True
+        except:
+            raise Exception("Normalization failed.")
+            
     
     def _rollingZScore(self, df):
 

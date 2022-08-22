@@ -24,15 +24,15 @@ class MoStressPreprocessing:
     def execute(self):
         print("Starting MoStress data preprocessing.\n")
 
-        print("Starting Data Normalization.\n")
+        print("Data Normalization in progress...\n")
         self._applyNormalization()
         print("Normalization finished.\n")
 
-        print("Starting Windows Labelling.\n")
+        print("Windows Labelling in progress...\n")
         self._applyWindowsLabelling()
         print("Windows Labelling finished.\n")
 
-        print("Starting Weights Calculation.\n")
+        print("Weights Calculation in progress...\n")
         self._applyWeightsCaculation()
         print("Weights Calculation finished.\n")
 

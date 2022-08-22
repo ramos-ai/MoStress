@@ -4,15 +4,21 @@ import numpy as np
 class WindowsLabelling(Steps):
     def __init__(self, moStressPreprocessing):
         self.moStressPreprocessing = moStressPreprocessing
+        self._hasWindowsLabellingFinished = False
     
     def execute(self):
-        for i in range(self.moStressPreprocessing.quantityOfSets):
-            self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i], discartedWindosCounter= self._labellingWindows(self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i])
-            self.moStressPreprocessing.discartedWindosCounter.append(discartedWindosCounter)
-        self.moStressPreprocessing.updatedTargetsClassesMapping = {
-            str(int(key) - 1): self.moStressPreprocessing.targetsClassesMapping[key]
-            for key in self.moStressPreprocessing.targetsClassesMapping
-        }
+        try:
+            if(not self._hasWindowsLabellingFinished):
+                for i in range(self.moStressPreprocessing.quantityOfSets):
+                    self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i], discartedWindosCounter= self._labellingWindows(self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i])
+                    self.moStressPreprocessing.discartedWindosCounter.append(discartedWindosCounter)
+                    self.moStressPreprocessing.updatedTargetsClassesMapping = {
+                        str(int(key) - 1): self.moStressPreprocessing.targetsClassesMapping[key]
+                        for key in self.moStressPreprocessing.targetsClassesMapping
+                    }
+                self._hasWindowsLabellingFinished = True
+        except:
+            raise Exception("Windows Labelling failled.")
     
     def _getElementArrayFrequency(self, npArray):
         (uniqueElements, elementsCount) = np.unique(npArray, return_counts=True, axis=0)

@@ -6,11 +6,17 @@ from sklearn.utils.class_weight import compute_class_weight
 class WeightsCalculation(Steps):
     def __init__(self, moStressPreprocessing):
         self.moStressPreprocessing = moStressPreprocessing
+        self._hasWeightsCalculationFinished = False
 
     def execute(self):
-        self.moStressPreprocessing.featuresModelValidation, self.moStressPreprocessing.targetsModelValidation =  self._getValidationData()
-        self.moStressPreprocessing.features, self.moStressPreprocessing.targets = self._getTrainningData()
-        self.moStressPreprocessing.weights = self._getWeights()
+        try:
+            if(not self._hasWeightsCalculationFinished):
+                self.moStressPreprocessing.featuresModelValidation, self.moStressPreprocessing.targetsModelValidation =  self._getValidationData()
+                self.moStressPreprocessing.features, self.moStressPreprocessing.targets = self._getTrainningData()
+                self.moStressPreprocessing.weights = self._getWeights()
+                self._hasWeightsCalculationFinished = True
+        except:
+            raise Exception("Weights Calculation failed.")
 
     def _getValidationData(self):
         seed(124816)
