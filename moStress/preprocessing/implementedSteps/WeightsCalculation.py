@@ -27,8 +27,8 @@ class WeightsCalculation(Steps):
         trainningFeatures = self.moStressPreprocessing.features[0]
         trainningTargets = self.moStressPreprocessing.targets[0]
         for i in range(1, self.moStressPreprocessing.quantityOfSets - 1):
-            trainningFeatures.append(self.moStressPreprocessing.features[i])
-            trainningTargets.append(self.moStressPreprocessing.targets[i])
+            trainningFeatures += self.moStressPreprocessing.features[i]
+            trainningTargets += self.moStressPreprocessing.targets[i]
         return trainningFeatures, trainningTargets
 
     def _getWeights(self):
