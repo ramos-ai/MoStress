@@ -10,6 +10,8 @@
   * 4.2 [Recurrent Neural Network Architecture](#42-recurrent-neural-network-architecture)
 * 5. [Improvements](#5-improvements)
 * 6. [Future Work](#6-future-work)
+* [Appendix](#7-apendix)
+  * A. [Code Architecture](#a-code-architecture)
 
 ## 1. Introduction
 
@@ -21,7 +23,7 @@ Ther resume of MoStress is shown on the image below:
 
 Also it is importante to mention that this code it doesn't contain exploratory functions or methods, here is just the execution of MoStress.
 
-Although , contributions to add those exploratory features are really welcome, please, create a pull request to add it!
+Although , contributions to add those exploratory features or any other contribution are really welcome, please, create your fork, branch and pull request to add it!
 
 ## 2. Prerequisites
 
@@ -30,7 +32,6 @@ The code is written in python 3.7 and the versions of the usage packeges are lis
 TODO: add list of versions here, or maybe add [shields](https://shields.io/category/platform-support).
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is imporant to obtain the WESAD data in advance.
-
 ## 3. Datasets
 
 Right now, there is only the implementation of the physiologic data collected from chest sensor of the WESAD. Thus, to help deal with the possible configuration of different datasets, we use the json ```configFiles/wesadDatasetOptions.json``` to add custom configurations and if you want to add new datasets, we suggest to do the same.
@@ -66,3 +67,90 @@ In progress...
 
 1. Change the RNN for reservoir computing or spiking neural networks;
 2. Use N-BEATS, with or without the preprocessing step.
+
+## Apendix
+
+### A. Code Architecture
+
+Still in progress...
+
+```mermaid
+
+classDiagram
+  class DatasetFactory {
+    +make(datasetName~string~, datasetPath~string~, datasetOptions~string~)
+  }
+  class  Dataset{
+    <<abstract>>
+    loadData(dataPath~string~, dataEncoding~string~ = 'latin1')$
+    saveData(dataPath~string~, data~any~)$
+    #_adjustUnecessarieLabelCode(labelData~any~, oldIndex~int~, newIndex~int~)
+    #_getData()*
+  }
+  class WesadPhysioChest {
+    +String dataPath
+    +Dictionary dataOpts
+    +Any data
+
+    -_getLabel(labelCode~int | string~) String
+    -_getData() Any
+  }
+  class Steps {
+    <<abstract>>
+    +execute()*
+  }
+  class Normalization {
+    +MoStressPreprocessing moStressPreprocessing
+    -Boolean _hasNormalizationFinished
+
+    -_rollingZScore(df~pd.DataFrame~)
+    +execute()
+  }
+  class WindowsLabelling {
+    +MoStressPreprocessing moStressPreprocessing
+    -Boolean _hasWindowsLabellingFinished
+
+    -_getElementArrayFrequency(npArray~np.Array~)
+    -_labellingWindows(df~pd.DataFrame~, labels~List~)
+    +execute()
+  }
+  class WeightsCalculation {
+    +MoStressPreprocessing moStressPreprocessing
+    -Boolean _hasWeightsCalculationFinished
+
+    -_getValidationData()
+    -_getTrainningData()
+    -_getWeights()
+    +execute()
+  }
+  class MoStressPreprocessing {
+    +List features
+    +List targets
+    +List featuresModelValidation
+    +List targetsModelValidation
+    +Dict quantityOfSets
+    +Dict discartedWindosCounter
+
+    -_applyNormalization()
+    -_applyWindowsLabelling()
+    -_applyWeightsCalculation()
+    +execute()
+  }
+
+  
+
+  Normalization <.. Steps: inherits
+  WindowsLabelling <.. Steps: inherits
+  WeightsCalculation <.. Steps: inherits
+
+  MoStressPreprocessing *-- Normalization
+  MoStressPreprocessing *-- WindowsLabelling
+  MoStressPreprocessing *-- WeightsCalculation
+
+  DatasetFactory .. MoStressPreprocessing
+
+  WesadPhysioChest <.. Dataset: inherits
+  DatasetFactory --|> WesadPhysioChest: make
+
+
+```
