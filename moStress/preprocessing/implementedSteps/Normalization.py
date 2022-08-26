@@ -19,8 +19,8 @@ class Normalization(Steps):
 
         copy_df = df.copy()
 
-        for i in range(len(df) - self.moStressPreprocessing.winSize + 1):
-            slicer = slice(i, self.moStressPreprocessing.winSize + i, self.moStressPreprocessing.winStep)
+        for i in range(len(df) - self.moStressPreprocessing._winSize + 1):
+            slicer = slice(i, self.moStressPreprocessing._winSize + i, self.moStressPreprocessing._winStep)
             mean = df[slicer].mean()
             std = df[slicer].std(ddof=0)
             copy_df[slicer] = (df[slicer] - mean) / std

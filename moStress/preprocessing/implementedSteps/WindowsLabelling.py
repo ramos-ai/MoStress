@@ -36,13 +36,13 @@ class WindowsLabelling(Steps):
         targetsLabelsArray = []
         discartedWindosCounter = { key: 0 for key in self.moStressPreprocessing.targetsClassesMapping }
 
-        for i in range(len(df) - self.moStressPreprocessing.winSize + 1):
-            slicer = slice(i, self.moStressPreprocessing.winSize + i, self.moStressPreprocessing.winStep)
+        for i in range(len(df) - self.moStressPreprocessing._winSize + 1):
+            slicer = slice(i, self.moStressPreprocessing._winSize + i, self.moStressPreprocessing._winStep)
             labelsNpArray = labels.to_numpy()[slicer]
             windowLabel, labelFrequency = self._getElementArrayFrequency(labelsNpArray)
         
             if (str(windowLabel) in self.moStressPreprocessing.targetsClassesMapping):
-                if (labelFrequency >= self.moStressPreprocessing.countingThreshold):
+                if (labelFrequency >= self.moStressPreprocessing._countingThreshold):
                     featuresWindowsArray.append(df[slicer].to_numpy())
                     targetsLabelsArray.append(windowLabel - 1)
                 else:

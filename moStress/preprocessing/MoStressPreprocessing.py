@@ -7,16 +7,16 @@ class MoStressPreprocessing:
         self.modelOpts = modelOpts
         self.quantityOfSets = len(dataset)
 
-        self.datasetSamplePeriod = self.modelOpts["datasetSamplePeriod"]
-        self.resamplingPeriod = self.modelOpts["resamplingPeriod"]
-        self.winSize = self.modelOpts["windowSizeInSeconds"] * (self.datasetSamplePeriod // self.resamplingPeriod)
-        self.winStep = self.modelOpts["windowSlideStepInSeconds"]
+        self._datasetSamplePeriod = self.modelOpts["datasetSamplePeriod"]
+        self._resamplingPeriod = self.modelOpts["resamplingPeriod"]
+        self._winSize = self.modelOpts["windowSizeInSeconds"] * (self._datasetSamplePeriod // self._resamplingPeriod)
+        self._winStep = self.modelOpts["windowSlideStepInSeconds"]
 
-        self.features = [ data[::self.resamplingPeriod][ self.modelOpts["features"] ] for data in dataset ]
-        self.targets = [ data[::self.resamplingPeriod][ self.modelOpts["targets"] ] for data in dataset ]
-        self.winNumberBySubject = [ len(range(0, len(data) - self.winSize +  1, self.winStep)) for data in self.features ]
+        self.features = [ data[::self._resamplingPeriod][ self.modelOpts["features"] ] for data in dataset ]
+        self.targets = [ data[::self._resamplingPeriod][ self.modelOpts["targets"] ] for data in dataset ]
+        self._winNumberBySubject = [ len(range(0, len(data) - self._winSize +  1, self._winStep)) for data in self.features ]
 
-        self.countingThreshold = self.modelOpts["percentageCountingThreshold"] / 100
+        self._countingThreshold = self.modelOpts["percentageCountingThreshold"] / 100
         self.targetsClassesMapping = self.modelOpts["targetsClassesMapping"]
 
         self.discartedWindosCounter = []
