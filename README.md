@@ -139,9 +139,9 @@ classDiagram
 
   
 
-  Normalization <.. Steps: inherits
-  WindowsLabelling <.. Steps: inherits
-  WeightsCalculation <.. Steps: inherits
+  Normalization ..> Steps: inherits
+  WindowsLabelling ..> Steps: inherits
+  WeightsCalculation ..> Steps: inherits
 
   MoStressPreprocessing *-- Normalization
   MoStressPreprocessing *-- WindowsLabelling
@@ -149,7 +149,7 @@ classDiagram
 
   DatasetFactory .. MoStressPreprocessing
 
-  WesadPhysioChest <.. Dataset: inherits
+  WesadPhysioChest ..> Dataset: inherits
   DatasetFactory --|> WesadPhysioChest: make
 
 
