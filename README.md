@@ -32,6 +32,7 @@ The code is written in python 3.7 and the versions of the usage packeges are lis
 TODO: add list of versions here, or maybe add [shields](https://shields.io/category/platform-support).
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is imporant to obtain the WESAD data in advance.
+
 ## 3. Datasets
 
 Right now, there is only the implementation of the physiologic data collected from chest sensor of the WESAD. Thus, to help deal with the possible configuration of different datasets, we use the json ```configFiles/wesadDatasetOptions.json``` to add custom configurations and if you want to add new datasets, we suggest to do the same.
@@ -143,11 +144,11 @@ classDiagram
   WindowsLabelling ..> Steps: inherits
   WeightsCalculation ..> Steps: inherits
 
-  MoStressPreprocessing *-- Normalization
-  MoStressPreprocessing *-- WindowsLabelling
-  MoStressPreprocessing *-- WeightsCalculation
+  MoStressPreprocessing *-- Normalization: compose
+  MoStressPreprocessing *-- WindowsLabelling: compose
+  MoStressPreprocessing *-- WeightsCalculation: compose
 
-  DatasetFactory .. MoStressPreprocessing
+  DatasetFactory ..|> MoStressPreprocessing: input
 
   WesadPhysioChest ..> Dataset: inherits
   DatasetFactory --|> WesadPhysioChest: make
