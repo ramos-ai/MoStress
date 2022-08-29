@@ -10,5 +10,6 @@
     "resamplingPeriod": 100,
     "windowSizeInSeconds": 60,
     "windowSlideStepInSeconds": 1,
-    "percentageCountingThreshold": 70
+    "percentageCountingThreshold": 70,
+    "trainningDataTestSize": 0.4
 }

@@ -35,7 +35,7 @@ At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/
 
 ## 3. Datasets
 
-Right now, there is only the implementation of the physiologic data collected from chest sensor of the WESAD. Thus, to help deal with the possible configuration of different datasets, we use the json ```configFiles/wesadDatasetOptions.json``` to add custom configurations and if you want to add new datasets, we suggest to do the same.
+Right now, there is only the implementation of the physiologic data collected from chest sensor of the WESAD. Thus, to help deal with the possible configuration of different datasets, we use the json ```configs/wesadDatasetOptions.json``` to add custom configurations and if you want to add new datasets, we suggest to do the same.
 
 If you need to add a new dataset, just create the class which implement it and add the class call on the ```datasets/DatasetFactory.py``` and also make your class inherit the abstract class ```datasets/Dataset.py``` and don't forget to implement the ```_getData()``` method.
 
@@ -45,7 +45,7 @@ If you need to add a new dataset, just create the class which implement it and a
 
 #### 4.1.1 Config File
 
-On the folder configFiles, there is a ```configFiles/wesadDatasetOptions.json```, where we set all the parameters needed on the preprocessing.
+On the folder configFiles, there is a ```configs/wesadDatasetOptions.json```, where we set all the parameters needed on the preprocessing.
 
 #### 4.1.2 Implemented Steps
 
