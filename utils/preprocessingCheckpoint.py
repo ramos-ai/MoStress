@@ -1,12 +1,14 @@
 import os
 from datasets.Dataset import Dataset
 
-saveDataPath = "data/preprocessedData"
+saveDataPathRoot = os.path.join("data","preprocessedData")
+trainningDataPath = os.path.join(saveDataPathRoot, "trainning","trainningData.pickle")
+validationDataPath = os.path.join(saveDataPathRoot, "validation","validationData.pickle"),
 
 def setPreprocessingCheckpoint(moStressPreprocessing):
 
     Dataset.saveData(
-        saveDataPath + "/trainning/trainningData.pickle",
+        trainningDataPath,
         {
             "features": moStressPreprocessing.features,
             "targets": moStressPreprocessing.targets,
@@ -15,7 +17,7 @@ def setPreprocessingCheckpoint(moStressPreprocessing):
     )
 
     Dataset.saveData(
-        saveDataPath + "/validation/validationData.pickle",
+        validationDataPath,
         {
             "features": moStressPreprocessing.featuresModelValidation,
             "targets": moStressPreprocessing.targetsModelValidation,
@@ -23,6 +25,6 @@ def setPreprocessingCheckpoint(moStressPreprocessing):
     )
 
 def getPreprocessingCheckpoint():
-    if (not os.listdir(saveDataPath)):
+    if (not os.listdir(saveDataPathRoot)):
         raise Exception("You need to set the checkpoint first.")
-    return Dataset.loadData("data/preprocessedData/trainning/trainningData.pickle")
+    return Dataset.loadData(trainningDataPath), Dataset.loadData(validationDataPath)

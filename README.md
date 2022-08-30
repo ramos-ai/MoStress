@@ -27,9 +27,8 @@ Although , contributions to add those exploratory features or any other contribu
 
 ## 2. Prerequisites
 
-The code is written in python 3.7 and the versions of the usage packeges are listed below:
-
-TODO: add list of versions here, or maybe add [shields](https://shields.io/category/platform-support).
+![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen) ![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen) ![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red) ![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red) ![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)
+![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red) ![Matplotlib Version](https://img.shields.io/badge/mtplotlib-3.5.3-orange) ![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is imporant to obtain the WESAD data in advance.
 
@@ -55,7 +54,20 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-In progress...
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ArchitecureFactory.py```.
+
+Currently we have the follow architectures implemented:
+
+- REGULARIZER-GRU,
+- REGULARIZER-LSTM,
+- BASELINE-GRU,
+- BASELINE-LSTM,
+
+The regularizer prefix means that we add a Ridge Regularizer and a Max Norm Bias on the output layer of the sequential model.
+
+Also, after we train the model, we save it on ```models/saved```
+
+If you want to test some customization on the model settings, please, check the the class ```moStress/neuralNetwork/modelHandler/OperateModel.py``` and ajust the parameters as needed.
 
 ## 5 Improvements
 
@@ -72,8 +84,6 @@ In progress...
 ## Apendix
 
 ### A. Code Architecture
-
-Still in progress...
 
 ```mermaid
 
@@ -138,8 +148,6 @@ classDiagram
     +execute()
   }
 
-  
-
   Normalization ..> Steps: inherits
   WindowsLabelling ..> Steps: inherits
   WeightsCalculation ..> Steps: inherits
@@ -153,5 +161,69 @@ classDiagram
   WesadPhysioChest ..> Dataset: inherits
   DatasetFactory --|> WesadPhysioChest: make
 
+  class ArchitectureFactory {
+    +make(architectureName~string~, architectureOptions~dictionarie~)
+  }
+  class SequentialArchitectures{
+    +Int winSize
+    +Int numFeatures
+    +Int numClasses
+
+    +gruRegularizerMoStress()
+    +lstmRegularizerMoStress()
+    +gruBaselineMostress()
+    +lstmBaselineMostress()
+  }
+  class OperateModel {
+    +MoStressNeuralNetwork moStressNeuralNetwork
+
+    #saveModel()
+    #loadModel()
+    #_getTensorData()
+    -_createModel()
+    -_compileModel()
+    -_fitModel()
+    -_setModelCallbacks()
+    -_printLearningCurves()
+  }
+  class EvalueateModel {
+    +Any model
+    +String modelName
+    +List featuresValidation
+    +List targetsValidation
+    +List classes
+
+    -_makePredictions()
+    +getClassesPredicted()
+    -_getConfusionMatrix()
+    +getConfusionMatrix()
+    +printConfusionMatrix()
+    +executeEvaluation()
+  }
+  class MoStressNeuralNetwork {
+    +Any modelOpts
+    +Dict weights
+    -Tensor _xTrain
+    -Tensor _xTest
+    -Tensor _yTrain
+    -Tensor _xTest
+    -Int _winSize
+    -Int _numFeatures
+    -Int _numClasses
+    -String _modelName
+    -String _optimizerName
+    -List _callbacks
+    +Any model
+    +Dict history
+    +String modelFullName
+
+    +execute()
+  }
+
+ArchitectureFactory --|> SequentialArchitectures:make
+OperateModel *-- ArchitectureFactory: compose
+MoStressNeuralNetwork *-- OperateModel: compose
+MoStressNeuralNetwork *-- EvalueateModel: evaluate
+MoStressPreprocessing --|> MoStressNeuralNetwork: input
 
 ```

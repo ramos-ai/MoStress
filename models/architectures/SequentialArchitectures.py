@@ -12,13 +12,13 @@ class SequentialArchitectures():
     def gruRegularizerMoStress(self):
         return self._rnnRegularizersMoStress(GRU, L2, 0.000001, max_norm, 3)
 
-    def lstmRegularizerMoStress(self, ):
+    def lstmRegularizerMoStress(self):
         return self._rnnRegularizersMoStress(LSTM, L2, 0.000001, max_norm, 3)
 
-    def gruBaselineMostress(self, ):
+    def gruBaselineMostress(self):
         return self._rnnBaselineMoStress(GRU)
 
-    def lstmBaselineMostress(self, ):
+    def lstmBaselineMostress(self):
         return self._rnnBaselineMoStress(LSTM)
 
     def _rnnRegularizersMoStress(self, neuron, regularizerFunction, regularizationFactor, biasConstraintFunction,  biasConstraintFactor):
