@@ -28,7 +28,7 @@ Although , contributions to add those exploratory features or any other contribu
 ## 2. Prerequisites
 
 ![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen) ![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen) ![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red) ![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red) ![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)
-![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red) ![Matplotlib Version](https://img.shields.io/badge/mtplotlib-3.5.3-orange) ![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)
+![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red) ![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange) ![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is imporant to obtain the WESAD data in advance.
 
