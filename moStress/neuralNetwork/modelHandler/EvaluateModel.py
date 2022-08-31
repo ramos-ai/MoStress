@@ -40,7 +40,7 @@ class EvaluateModel:
     def executeEvaluation(self):
         print(f"Evaluating MoStress with model: {self.modelName}\n")
         print("Classification Report\n")
-        print(classification_report(self.targetValidation, self.getClassesPredicted(), digits=4))
+        print(classification_report(self.targetValidation, self.getClassesPredicted(), digits=4, target_names=self.classes))
         print("\n")
         print("Confusion Matrix\n")
         self.printConfusionMatrix()
