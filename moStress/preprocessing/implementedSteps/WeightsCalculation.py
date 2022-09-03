@@ -12,7 +12,7 @@ class WeightsCalculation(Steps):
         try:
             if(not self._hasWeightsCalculationFinished):
                 self.moStressPreprocessing.featuresModelValidation, self.moStressPreprocessing.targetsModelValidation =  self._getValidationData()
-                self.moStressPreprocessing.features, self.moStressPreprocessing.targets = self._getTrainningData()
+                self.moStressPreprocessing.features, self.moStressPreprocessing.targets = self._getTrainingData()
                 self.moStressPreprocessing.weights = self._getWeights()
                 self._hasWeightsCalculationFinished = True
         except:
@@ -23,13 +23,13 @@ class WeightsCalculation(Steps):
         indexToRemove = randint(0, self.moStressPreprocessing.quantityOfSets - 1)
         return self.moStressPreprocessing.features.pop(indexToRemove), self.moStressPreprocessing.targets.pop(indexToRemove)
 
-    def _getTrainningData(self):
-        trainningFeatures = self.moStressPreprocessing.features[0]
-        trainningTargets = self.moStressPreprocessing.targets[0]
+    def _getTrainingData(self):
+        trainingFeatures = self.moStressPreprocessing.features[0]
+        trainingTargets = self.moStressPreprocessing.targets[0]
         for i in range(1, self.moStressPreprocessing.quantityOfSets - 1):
-            trainningFeatures += self.moStressPreprocessing.features[i]
-            trainningTargets += self.moStressPreprocessing.targets[i]
-        return trainningFeatures, trainningTargets
+            trainingFeatures += self.moStressPreprocessing.features[i]
+            trainingTargets += self.moStressPreprocessing.targets[i]
+        return trainingFeatures, trainingTargets
 
     def _getWeights(self):
         weights = compute_class_weight(

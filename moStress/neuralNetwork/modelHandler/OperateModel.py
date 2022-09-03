@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 import os
 
-from models.architectures.AchitectureFactory import ArchitectureFactory
+from models.architectures.ArchitectureFactory import ArchitectureFactory
 
 class OperateModel:
     def __init__(self, moStressNeuralNetwork):
@@ -74,8 +74,8 @@ class OperateModel:
             currentTime
         )
         
-        tranningCheckpointPath = os.path.join(
-            "tranningCheckpoint",
+        trainingCheckpointPath = os.path.join(
+            "trainingCheckpoint",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",
             "cp.ckpt"
@@ -85,7 +85,7 @@ class OperateModel:
             self.moStressNeuralNetwork._callbacks = [
                 EarlyStopping(monitor='sparse_categorical_accuracy', patience=20, mode='min'),
                 TensorBoard(log_dir=tensorBoardFilesPath, write_graph=True, histogram_freq=5),
-                ModelCheckpoint(filepath=tranningCheckpointPath, save_weights_only=True, verbose=1)
+                ModelCheckpoint(filepath=trainingCheckpointPath, save_weights_only=True, verbose=1)
             ]
             return
         self.moStressNeuralNetwork._callbacks = callbacksList

@@ -10,8 +10,8 @@ class WindowsLabelling(Steps):
         try:
             if(not self._hasWindowsLabellingFinished):
                 for i in range(self.moStressPreprocessing.quantityOfSets):
-                    self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i], discartedWindosCounter= self._labellingWindows(self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i])
-                    self.moStressPreprocessing.discartedWindosCounter.append(discartedWindosCounter)
+                    self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i], discardedWindowsCounter= self._labellingWindows(self.moStressPreprocessing.features[i], self.moStressPreprocessing.targets[i])
+                    self.moStressPreprocessing.discardedWindowsCounter.append(discardedWindowsCounter)
                     self.moStressPreprocessing.updatedTargetsClassesMapping = {
                         str(int(key) - 1): self.moStressPreprocessing.targetsClassesMapping[key]
                         for key in self.moStressPreprocessing.targetsClassesMapping
@@ -34,7 +34,7 @@ class WindowsLabelling(Steps):
 
         featuresWindowsArray = []
         targetsLabelsArray = []
-        discartedWindosCounter = { key: 0 for key in self.moStressPreprocessing.targetsClassesMapping }
+        discardedWindowsCounter = { key: 0 for key in self.moStressPreprocessing.targetsClassesMapping }
 
         for i in range(len(df) - self.moStressPreprocessing._winSize + 1):
             slicer = slice(i, self.moStressPreprocessing._winSize + i, self.moStressPreprocessing._winStep)
@@ -46,7 +46,7 @@ class WindowsLabelling(Steps):
                     featuresWindowsArray.append(df[slicer].to_numpy())
                     targetsLabelsArray.append(windowLabel - 1)
                 else:
-                    discartedWindosCounter[str(windowLabel)] += 1
+                    discardedWindowsCounter[str(windowLabel)] += 1
         
-        return featuresWindowsArray, targetsLabelsArray, discartedWindosCounter
+        return featuresWindowsArray, targetsLabelsArray, discardedWindowsCounter
     

@@ -16,9 +16,9 @@ class Dataset(ABC):
         with open(dataPath, 'wb') as handle:
             pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
     
-    def _adjustUnecessarieLabelCode(self, labelData, oldIndex, newIndex):
-        oldIndexePosition = np.where(labelData == oldIndex)
-        labelData[oldIndexePosition] = newIndex
+    def _adjustUnnecessaryLabelCode(self, labelData, oldIndex, newIndex):
+        oldIndexPosition = np.where(labelData == oldIndex)
+        labelData[oldIndexPosition] = newIndex
     
     @abstractmethod
     def _getData(self):

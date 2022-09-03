@@ -10,18 +10,18 @@
   * 4.2 [Recurrent Neural Network Architecture](#42-recurrent-neural-network-architecture)
 * 5. [Improvements](#5-improvements)
 * 6. [Future Work](#6-future-work)
-* [Appendix](#7-apendix)
+* [Appendix](#appendix)
   * A. [Code Architecture](#a-code-architecture)
 
 ## 1. Introduction
 
 This is the implementation of MoStress: a sequence model for stress classification. For more information about the model itself and all the processes and experiments around it, please, read: [MoStress: a Sequence Model for Stress Classification](https://gdoramos.net/publications/). For more questions and discussions, please contact me or any of the authors of the previous article.
 
-Ther resume of MoStress is shown on the image below:
+The resume of MoStress is shown on the image below:
 
 ![MoStress](./MoStressFull.jpg)
 
-Also it is importante to mention that this code it doesn't contain exploratory functions or methods, here is just the execution of MoStress.
+Also it is important to mention that this code it doesn't contain exploratory functions or methods, here is just the execution of MoStress.
 
 Although , contributions to add those exploratory features or any other contribution are really welcome, please, create your fork, branch and pull request to add it!
 
@@ -30,7 +30,7 @@ Although , contributions to add those exploratory features or any other contribu
 ![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen) ![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen) ![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red) ![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red) ![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)
 ![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red) ![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange) ![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)
 
-At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is imporant to obtain the WESAD data in advance.
+At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is important to obtain the WESAD data in advance.
 
 ## 3. Datasets
 
@@ -54,20 +54,20 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ArchitecureFactory.py```.
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ArchitectureFactory.py```.
 
 Currently we have the follow architectures implemented:
 
-- REGULARIZER-GRU,
-- REGULARIZER-LSTM,
-- BASELINE-GRU,
-- BASELINE-LSTM,
+* REGULARIZER-GRU,
+* REGULARIZER-LSTM,
+* BASELINE-GRU,
+* BASELINE-LSTM,
 
 The regularizer prefix means that we add a Ridge Regularizer and a Max Norm Bias on the output layer of the sequential model.
 
 Also, after we train the model, we save it on ```models/saved```
 
-If you want to test some customization on the model settings, please, check the the class ```moStress/neuralNetwork/modelHandler/OperateModel.py``` and ajust the parameters as needed.
+If you want to test some customization on the model settings, please, check the the class ```moStress/neuralNetwork/modelHandler/OperateModel.py``` and adjust the parameters as needed.
 
 ## 5 Improvements
 
@@ -81,7 +81,7 @@ If you want to test some customization on the model settings, please, check the 
 1. Change the RNN for reservoir computing or spiking neural networks;
 2. Use N-BEATS, with or without the preprocessing step.
 
-## Apendix
+## Appendix
 
 ### A. Code Architecture
 
@@ -95,7 +95,7 @@ classDiagram
     <<abstract>>
     loadData(dataPath~string~, dataEncoding~string~ = 'latin1')$
     saveData(dataPath~string~, data~any~)$
-    #_adjustUnecessarieLabelCode(labelData~any~, oldIndex~int~, newIndex~int~)
+    #_adjustUnnecessaryLabelCode(labelData~any~, oldIndex~int~, newIndex~int~)
     #_getData()*
   }
   class WesadPhysioChest {
@@ -130,7 +130,7 @@ classDiagram
     -Boolean _hasWeightsCalculationFinished
 
     -_getValidationData()
-    -_getTrainningData()
+    -_getTrainingData()
     -_getWeights()
     +execute()
   }
@@ -140,7 +140,7 @@ classDiagram
     +List featuresModelValidation
     +List targetsModelValidation
     +Dict quantityOfSets
-    +Dict discartedWindosCounter
+    +Dict discardedWindowsCounter
 
     -_applyNormalization()
     -_applyWindowsLabelling()
@@ -162,7 +162,7 @@ classDiagram
   DatasetFactory --|> WesadPhysioChest: make
 
   class ArchitectureFactory {
-    +make(architectureName~string~, architectureOptions~dictionarie~)
+    +make(architectureName~string~, architectureOptions~dictionary~)
   }
   class SequentialArchitectures{
     +Int winSize
@@ -186,7 +186,7 @@ classDiagram
     -_setModelCallbacks()
     -_printLearningCurves()
   }
-  class EvalueateModel {
+  class EvaluateModel {
     +Any model
     +String modelName
     +List featuresValidation
@@ -223,7 +223,7 @@ classDiagram
 ArchitectureFactory --|> SequentialArchitectures:make
 OperateModel *-- ArchitectureFactory: compose
 MoStressNeuralNetwork *-- OperateModel: compose
-MoStressNeuralNetwork *-- EvalueateModel: evaluate
+MoStressNeuralNetwork *-- EvaluateModel: evaluate
 MoStressPreprocessing --|> MoStressNeuralNetwork: input
 
 ```

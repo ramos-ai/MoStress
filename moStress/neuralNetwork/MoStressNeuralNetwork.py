@@ -25,7 +25,7 @@ class MoStressNeuralNetwork:
         print(f"\nCreating model: {self._modelName}\n")
         modelOperator._createModel(self._modelName)
         print("\nModel Created\n")
-        print(f"\nCompiling model with optmizer: {self._optimizerName}\n")
+        print(f"\nCompiling model with optimizer: {self._optimizerName}\n")
         modelOperator._compileModel(self._optimizerName)
         print("\nModel Compiled\n")
         print("\nFitting Model\n")

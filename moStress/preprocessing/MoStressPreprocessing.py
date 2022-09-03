@@ -19,7 +19,7 @@ class MoStressPreprocessing:
         self._countingThreshold = self.modelOpts["percentageCountingThreshold"] / 100
         self.targetsClassesMapping = self.modelOpts["targetsClassesMapping"]
 
-        self.discartedWindosCounter = []
+        self.discardedWindowsCounter = []
 
     def execute(self):
         print("Starting MoStress data preprocessing.\n")
@@ -33,12 +33,12 @@ class MoStressPreprocessing:
         print("Windows Labelling finished.\n")
 
         print("Weights Calculation in progress...\n")
-        self._applyWeightsCaculation()
+        self._applyWeightsCalculation()
         print("Weights Calculation finished.\n")
 
         print("MoStress data preprocessing finished.\n")
 
-        # TODO: implement Resume Report that might be printed in the ende
+        # TODO: implement Resume Report that might be printed in the end
 
     def _applyNormalization(self):
         Normalization(self).execute()
@@ -46,5 +46,5 @@ class MoStressPreprocessing:
     def _applyWindowsLabelling(self):
         WindowsLabelling(self).execute()
     
-    def _applyWeightsCaculation(self):
+    def _applyWeightsCalculation(self):
         WeightsCalculation(self).execute()

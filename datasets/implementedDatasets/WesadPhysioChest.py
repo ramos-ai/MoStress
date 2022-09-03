@@ -33,8 +33,8 @@ class WesadPhysioChest(Dataset):
                 chestPhysioData[chestPhysioSignal] = subjectData["signal"]["chest"][chestPhysioSignal]
                 chestPhysioData[chestPhysioSignal] = chestPhysioData[chestPhysioSignal].reshape(subjectDataLength, )
             
-            self._adjustUnecessarieLabelCode(subjectDataLabel, 7, 5)
-            self._adjustUnecessarieLabelCode(subjectDataLabel, 6, 5)
+            self._adjustUnnecessaryLabelCode(subjectDataLabel, 7, 5)
+            self._adjustUnnecessaryLabelCode(subjectDataLabel, 6, 5)
 
             chestPhysioData["label"] = getLabel(subjectDataLabel)
             chestPhysioData["label_id"] = subjectDataLabel
