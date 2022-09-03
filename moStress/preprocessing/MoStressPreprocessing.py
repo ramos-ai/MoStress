@@ -1,6 +1,9 @@
 from moStress.preprocessing.implementedSteps.Normalization import Normalization
-from moStress.preprocessing.implementedSteps.WindowsLabelling import WindowsLabelling
-from moStress.preprocessing.implementedSteps.WeightsCalculation import WeightsCalculation
+from moStress.preprocessing.implementedSteps.WeightsCalculation import \
+    WeightsCalculation
+from moStress.preprocessing.implementedSteps.WindowsLabelling import \
+    WindowsLabelling
+
 
 class MoStressPreprocessing:
     def __init__(self, modelOpts, dataset) -> None:
@@ -9,12 +12,16 @@ class MoStressPreprocessing:
 
         self._datasetSamplePeriod = self.modelOpts["datasetSamplePeriod"]
         self._resamplingPeriod = self.modelOpts["resamplingPeriod"]
-        self._winSize = self.modelOpts["windowSizeInSeconds"] * (self._datasetSamplePeriod // self._resamplingPeriod)
+        self._winSize = self.modelOpts["windowSizeInSeconds"] * \
+            (self._datasetSamplePeriod // self._resamplingPeriod)
         self._winStep = self.modelOpts["windowSlideStepInSeconds"]
 
-        self.features = [ data[::self._resamplingPeriod][ self.modelOpts["features"] ] for data in dataset ]
-        self.targets = [ data[::self._resamplingPeriod][ self.modelOpts["targets"] ] for data in dataset ]
-        self._winNumberBySubject = [ len(range(0, len(data) - self._winSize +  1, self._winStep)) for data in self.features ]
+        self.features = [data[::self._resamplingPeriod]
+                         [self.modelOpts["features"]] for data in dataset]
+        self.targets = [data[::self._resamplingPeriod]
+                        [self.modelOpts["targets"]] for data in dataset]
+        self._winNumberBySubject = [len(range(
+            0, len(data) - self._winSize + 1, self._winStep)) for data in self.features]
 
         self._countingThreshold = self.modelOpts["percentageCountingThreshold"] / 100
         self.targetsClassesMapping = self.modelOpts["targetsClassesMapping"]
@@ -42,9 +49,9 @@ class MoStressPreprocessing:
 
     def _applyNormalization(self):
         Normalization(self).execute()
-    
+
     def _applyWindowsLabelling(self):
         WindowsLabelling(self).execute()
-    
+
     def _applyWeightsCalculation(self):
         WeightsCalculation(self).execute()

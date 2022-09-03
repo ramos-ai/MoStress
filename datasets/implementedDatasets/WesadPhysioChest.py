@@ -1,17 +1,19 @@
+import os
+
 import numpy as np
 import pandas as pd
-import os
 from datasets.Dataset import Dataset
+
 
 class WesadPhysioChest(Dataset):
     def __init__(self, dataPath, dataOpts):
         self.dataPath = dataPath
         self.dataOpts = dataOpts
         self.data = self._getData()
-    
+
     def _getLabel(self, labelCode):
         return self.dataOpts["stateCodes"][str(labelCode)]
-    
+
     def _getData(self):
 
         dataList = []
@@ -24,15 +26,17 @@ class WesadPhysioChest(Dataset):
 
             chestPhysioData = {}
 
-            subjectPath = os.path.join(self.dataPath, subject, subject + ".pkl")
+            subjectPath = os.path.join(
+                self.dataPath, subject, subject + ".pkl")
             subjectData = Dataset.loadData(subjectPath)
             subjectDataLabel = subjectData["label"]
             subjectDataLength = len(subjectDataLabel)
 
             for chestPhysioSignal in listOfChestPhysioSignals:
                 chestPhysioData[chestPhysioSignal] = subjectData["signal"]["chest"][chestPhysioSignal]
-                chestPhysioData[chestPhysioSignal] = chestPhysioData[chestPhysioSignal].reshape(subjectDataLength, )
-            
+                chestPhysioData[chestPhysioSignal] = chestPhysioData[chestPhysioSignal].reshape(
+                    subjectDataLength, )
+
             self._adjustUnnecessaryLabelCode(subjectDataLabel, 7, 5)
             self._adjustUnnecessaryLabelCode(subjectDataLabel, 6, 5)
 
@@ -41,5 +45,5 @@ class WesadPhysioChest(Dataset):
             chestPhysioData["subject"] = subjectData["subject"]
 
             dataList.append(pd.DataFrame(chestPhysioData))
-        
+
         return dataList

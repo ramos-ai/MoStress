@@ -1,8 +1,11 @@
-from models.architectures.SequentialArchitectures import SequentialArchitectures
+from models.architectures.SequentialArchitectures import \
+    SequentialArchitectures
+
 
 class ArchitectureFactory():
     def make(self, architectureName, architectureOptions):
-        sequentialArchitecture = SequentialArchitectures(architectureOptions["winSize"], architectureOptions["numFeatures"], architectureOptions["numClasses"])
+        sequentialArchitecture = SequentialArchitectures(
+            architectureOptions["winSize"], architectureOptions["numFeatures"], architectureOptions["numClasses"])
         if (architectureName == "REGULARIZER-GRU"):
             return sequentialArchitecture.gruRegularizerMoStress()
         elif (architectureName == "REGULARIZER-LSTM"):
