@@ -1,7 +1,5 @@
-import os
 import pickle
 from abc import ABC, abstractmethod
-from math import pi
 
 import numpy as np
 
@@ -9,8 +7,7 @@ import numpy as np
 class Dataset(ABC):
     @staticmethod
     def loadData(dataPath, dataEncoding='latin1'):
-        pkl_path = os.path.join(dataPath)
-        f = open(pkl_path, 'rb')
+        f = open(dataPath, 'rb')
         return pickle.load(f, encoding=dataEncoding)
 
     @staticmethod

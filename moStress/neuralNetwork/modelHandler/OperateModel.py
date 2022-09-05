@@ -100,7 +100,7 @@ class OperateModel:
     def _printLearningCurves(self, loss="Sparse Categorical Crossentropy"):
         plt.figure(figsize=(30, 15))
         plt.plot(
-            self.moStressNeuralNetwork.history.history['loss'], label=loss + " (Trainning Data)")
+            self.moStressNeuralNetwork.history.history['loss'], label=loss + " (Training Data)")
         plt.plot(self.moStressNeuralNetwork.history.history['val_loss'],
                  label=loss + " (Testing Data)", marker=".", markersize=20)
         plt.title(loss)

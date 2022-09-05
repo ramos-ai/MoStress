@@ -11,5 +11,5 @@
     "windowSizeInSeconds": 60,
     "windowSlideStepInSeconds": 1,
     "percentageCountingThreshold": 70,
-    "trainningDataTestSize": 0.4
+    "trainingDataTestSize": 0.4
 }

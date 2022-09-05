@@ -9,7 +9,7 @@ class MoStressNeuralNetwork:
 
         self.weights = dataset["weights"]
         self._xTrain, self._xTest, self._yTrain, self._yTest = OperateModel._getTensorData(
-            dataset["features"], dataset["targets"], self.modelOpts["trainningDataTestSize"])
+            dataset["features"], dataset["targets"], self.modelOpts["trainingDataTestSize"])
 
         self._winSize = self._xTrain.shape[1]
         self._numFeatures = self._xTrain.shape[2]
