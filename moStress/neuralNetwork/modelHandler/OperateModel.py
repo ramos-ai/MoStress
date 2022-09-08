@@ -35,6 +35,7 @@ class OperateModel:
                 - REGULARIZER-LSTM,
                 - BASELINE-GRU,
                 - BASELINE-LSTM,
+                - BASELINE-RESERVOIR
         '''
         self.moStressNeuralNetwork._modelName = modelName
         self.moStressNeuralNetwork.model = ArchitectureFactory().make(
