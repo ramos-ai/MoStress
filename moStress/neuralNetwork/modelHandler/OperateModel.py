@@ -72,6 +72,7 @@ class OperateModel:
         currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
         tensorBoardFilesPath = os.path.join(
+            "..",
             "logs",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",
@@ -80,6 +81,7 @@ class OperateModel:
         )
 
         trainingCheckpointPath = os.path.join(
+            "..",
             "trainingCheckpoint",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",

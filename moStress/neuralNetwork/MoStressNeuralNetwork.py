@@ -39,7 +39,7 @@ class MoStressNeuralNetwork:
         print("\nModel Fitted\n")
         print("\Saving Model\n")
         OperateModel.saveModel(self.model, join(
-            "models", "saved", f"{self._modelName}-{self._optimizerName.upper()}.h5"))
+            "..", "models", "saved", f"{self._modelName}-{self._optimizerName.upper()}.h5"))
         print("\nModel Saved\n")
         print("\nLearning Curves\n")
         modelOperator._printLearningCurves()
