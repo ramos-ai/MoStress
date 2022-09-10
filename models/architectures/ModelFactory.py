@@ -1,11 +1,11 @@
-from models.architectures.ReservoirComputingArchitectures import ReservoirComputingArchitectures
-from models.architectures.SequentialArchitectures import \
-    SequentialArchitectures
+from models.architectures.ReservoirModels import ReservoirModels
+from models.architectures.SequentialModels import \
+    SequentialModels
 
 
-class ArchitectureFactory():
+class ModelFactory():
     def make(self, architectureName, architectureOptions):
-        sequentialArchitecture = SequentialArchitectures(
+        sequentialArchitecture = SequentialModels(
             architectureOptions["winSize"], architectureOptions["numFeatures"], architectureOptions["numClasses"])
         if (architectureName == "REGULARIZER-GRU"):
             return sequentialArchitecture.gruRegularizerMoStress()
@@ -16,6 +16,6 @@ class ArchitectureFactory():
         elif (architectureName == "BASELINE-LSTM"):
             return sequentialArchitecture.lstmBaselineMostress()
         elif (architectureName == "BASELINE-RESERVOIR"):
-            return ReservoirComputingArchitectures().baseline()
+            return ReservoirModels().baseline()
         else:
             raise Exception("Architecture not implemented.")

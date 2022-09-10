@@ -1,7 +1,7 @@
 from reservoirpy import set_seed, verbosity
 from reservoirpy.nodes import Reservoir, Ridge, Input
 
-class ReservoirComputingArchitectures:
+class ReservoirModels:
     def __init__(self, randomSeed = 42, verbosityState = 0):
         set_seed(randomSeed)
         verbosity(verbosityState)
@@ -21,4 +21,4 @@ class ReservoirComputingArchitectures:
         }
 
 if __name__ == "__main__":
-    ReservoirComputingArchitectures().baseline()
+    ReservoirModels().baseline()

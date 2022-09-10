@@ -2,7 +2,7 @@ import datetime
 import os
 
 import matplotlib.pyplot as plt
-from models.architectures.ArchitectureFactory import ArchitectureFactory
+from models.architectures.ModelFactory import ModelFactory
 from sklearn.model_selection import train_test_split
 from tensorflow import convert_to_tensor
 from tensorflow.python.keras.callbacks import (EarlyStopping, ModelCheckpoint,
@@ -38,7 +38,7 @@ class OperateModel:
                 - BASELINE-RESERVOIR
         '''
         self.moStressNeuralNetwork._modelName = modelName
-        self.moStressNeuralNetwork.model = ArchitectureFactory().make(
+        self.moStressNeuralNetwork.model = ModelFactory().make(
             self.moStressNeuralNetwork._modelName,
             {
                 "winSize": self.moStressNeuralNetwork._winSize,

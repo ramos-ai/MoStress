@@ -54,7 +54,7 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ArchitectureFactory.py```.
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ModelFactory.py```.
 
 Currently we have the follow architectures implemented:
 
@@ -161,10 +161,10 @@ classDiagram
   WesadPhysioChest ..> Dataset: inherits
   DatasetFactory --|> WesadPhysioChest: make
 
-  class ArchitectureFactory {
+  class ModelFactory {
     +make(architectureName~string~, architectureOptions~dictionary~)
   }
-  class SequentialArchitectures{
+  class SequentialModels{
     +Int winSize
     +Int numFeatures
     +Int numClasses
@@ -220,8 +220,8 @@ classDiagram
     +execute()
   }
 
-ArchitectureFactory --|> SequentialArchitectures:make
-OperateModel *-- ArchitectureFactory: compose
+ModelFactory --|> SequentialModels:make
+OperateModel *-- ModelFactory: compose
 MoStressNeuralNetwork *-- OperateModel: compose
 MoStressNeuralNetwork *-- EvaluateModel: evaluate
 MoStressPreprocessing --|> MoStressNeuralNetwork: input

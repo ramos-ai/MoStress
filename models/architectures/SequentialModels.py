@@ -6,11 +6,13 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.regularizers import L2
 
 
-class SequentialArchitectures():
+class SequentialModels():
     def __init__(self, winSize, numFeatures, numClasses):
         self.winSize = winSize
         self.numFeatures = numFeatures
         self.numClasses = numClasses
+
+    ##############---ARCHITECTURES---##############
 
     def gruRegularizerMoStress(self):
         return self._rnnRegularizersMoStress(GRU, L2, 0.000001, max_norm, 3)
@@ -51,7 +53,7 @@ class SequentialArchitectures():
 
 if __name__ == "__main__":
 
-    SequentialArchitectures(420, 5, 3).gruRegularizerMoStress()
-    SequentialArchitectures(420, 5, 3).lstmRegularizerMoStress()
-    SequentialArchitectures(420, 5, 3).gruBaselineMostress()
-    SequentialArchitectures(420, 5, 3).lstmBaselineMostress()
+    SequentialModels(420, 5, 3).gruRegularizerMoStress()
+    SequentialModels(420, 5, 3).lstmRegularizerMoStress()
+    SequentialModels(420, 5, 3).gruBaselineMostress()
+    SequentialModels(420, 5, 3).lstmBaselineMostress()
