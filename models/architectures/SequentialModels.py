@@ -1,3 +1,9 @@
+import datetime
+import os
+
+import matplotlib.pyplot as plt
+from tensorflow.python.keras.callbacks import (EarlyStopping, ModelCheckpoint,
+                                               TensorBoard)
 from tensorflow.python.keras.constraints import max_norm
 from tensorflow.python.keras.layers import (GRU, LSTM, Activation, Dense,
                                             Dropout, Flatten, GaussianNoise,
@@ -7,10 +13,8 @@ from tensorflow.python.keras.regularizers import L2
 
 
 class SequentialModels():
-    def __init__(self, winSize, numFeatures, numClasses):
-        self.winSize = winSize
-        self.numFeatures = numFeatures
-        self.numClasses = numClasses
+    def __init__(self, moStressNeuralNetwork):
+        self.moStressNeuralNetwork = moStressNeuralNetwork
 
     ##############---ARCHITECTURES---##############
 
@@ -35,7 +39,7 @@ class SequentialModels():
 
     def _rnnBaselineMoStress(self, neuron, activity_regularizer=None, bias_constraint=None):
         def rnnNeuron(neuronFunc): return neuronFunc(128, input_shape=(
-            self.winSize, self.numFeatures), return_sequences=True)
+            self.moStressNeuralNetwork._winSize, self.moStressNeuralNetwork._numFeatures), return_sequences=True)
 
         model = Sequential()
         model.add(rnnNeuron(neuron))
@@ -43,17 +47,78 @@ class SequentialModels():
         model.add(GaussianNoise(0.5))
         model.add(Dropout(0.3))
         model.add(Flatten())
-        model.add(Dense(self.numClasses, activity_regularizer=activity_regularizer,
+        model.add(Dense(self.moStressNeuralNetwork._numClasses, activity_regularizer=activity_regularizer,
                   bias_constraint=bias_constraint))
         model.add(Activation("softmax"))
         model.summary()
 
-        return model
+        self.model = model
 
+        return self
 
-if __name__ == "__main__":
+    ##############---OPERATIONS---##############
 
-    SequentialModels(420, 5, 3).gruRegularizerMoStress()
-    SequentialModels(420, 5, 3).lstmRegularizerMoStress()
-    SequentialModels(420, 5, 3).gruBaselineMostress()
-    SequentialModels(420, 5, 3).lstmBaselineMostress()
+    def _compileModel(self, loss="sparse_categorical_crossentropy", metrics=["sparse_categorical_accuracy"]):
+        self.model.compile(
+            optimizer=self.moStressNeuralNetwork._optimizerName,
+            loss=loss,
+            metrics=metrics   
+        )
+
+    def _setModelCallbacks(self, callbacksList=[]):
+        currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorBoardFilesPath = os.path.join(
+            "..",
+            "..",
+            "logs",
+            f"{self.moStressNeuralNetwork._modelName}",
+            f"{self.moStressNeuralNetwork._optimizerName}",
+            "fit",
+            currentTime
+        )
+        trainingCheckpointPath = os.path.join(
+            "..",
+            "..",
+            "trainingCheckpoint",
+            f"{self.moStressNeuralNetwork._modelName}",
+            f"{self.moStressNeuralNetwork._optimizerName}",
+            "cp.ckpt"
+        )
+
+        if (not len(callbacksList) > 0):
+            self.moStressNeuralNetwork._callbacks = [
+                EarlyStopping(monitor='sparse_categorical_accuracy',
+                              patience=20, mode='min'),
+                TensorBoard(log_dir=tensorBoardFilesPath,
+                            write_graph=True, histogram_freq=5),
+                ModelCheckpoint(filepath=trainingCheckpointPath,
+                                save_weights_only=True, verbose=1)
+            ]
+            return
+        self.moStressNeuralNetwork._callbacks = callbacksList
+    
+    def _fitModel(self, epochs=100, shuffle=False):
+        self.moStressNeuralNetwork.history = self.model.fit(
+            x=self.moStressNeuralNetwork._xTrain,
+            y=self.moStressNeuralNetwork._yTrain,
+            validation_data=(self.moStressNeuralNetwork._xTest,
+                             self.moStressNeuralNetwork._yTest),
+            epochs=epochs,
+            shuffle=shuffle,
+            class_weight=self.moStressNeuralNetwork.weights,
+            callbacks=self.moStressNeuralNetwork._callbacks
+        )
+
+    def _printLearningCurves(self, loss="Sparse Categorical Crossentropy"):
+        plt.figure(figsize=(30, 15))
+        plt.plot(
+            self.moStressNeuralNetwork.history.history['loss'], label=loss + " (Training Data)")
+        plt.plot(self.moStressNeuralNetwork.history.history['val_loss'],
+                 label=loss + " (Testing Data)", marker=".", markersize=20)
+        plt.title(loss)
+        plt.ylabel(f'{loss} value')
+        plt.xlabel('No. epoch')
+        plt.legend(loc="upper left")
+        plt.grid(True)
+        plt.show()
+

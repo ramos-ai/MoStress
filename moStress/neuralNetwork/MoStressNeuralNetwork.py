@@ -1,6 +1,7 @@
 from os.path import join
 
-from moStress.neuralNetwork.modelHandler.OperateModel import OperateModel
+from utils.OperateModel import OperateModel
+from models.ModelFactory import ModelFactory
 
 
 class MoStressNeuralNetwork:
@@ -17,30 +18,46 @@ class MoStressNeuralNetwork:
 
     def execute(self, modelName="REGULARIZER-LSTM", optimizer="rmsprop"):
         '''As standard, the best model tested will be executed,
-        to test other models, change methods parameters.'''
+        to test other models, change methods parameters.
+
+        The options of models available are the following: 
+
+            OPTIONS:
+                - REGULARIZER-GRU,
+                - REGULARIZER-LSTM,
+                - BASELINE-GRU,
+                - BASELINE-LSTM,
+                - BASELINE-RESERVOIR
+        '''
 
         self._modelName = modelName
         self._optimizerName = optimizer
         self.modelFullName = f"{self._modelName}-{self._optimizerName.upper()}"
 
-        modelOperator = OperateModel(self)
+        print(f"Starting MoStress with model: {self.modelFullName}.\n")
+        self.model = ModelFactory().make(self, self._modelName)
 
-        print(
-            f"Starting MoStress with model architecture: {self._modelName} and optimizer: {self._optimizerName}.\n")
-        print(f"\nCreating model: {self._modelName}\n")
-        modelOperator._createModel(self._modelName)
-        print("\nModel Created\n")
         print(f"\nCompiling model with optimizer: {self._optimizerName}\n")
-        modelOperator._compileModel(self._optimizerName)
+        self.model._compileModel()
         print("\nModel Compiled\n")
+
         print("\nFitting Model\n")
-        modelOperator._setModelCallbacks()
-        modelOperator._fitModel()
+        self.model._setModelCallbacks()
+        self.model._fitModel()
         print("\nModel Fitted\n")
+
         print("\Saving Model\n")
-        OperateModel.saveModel(self.model, join(
-            "..", "models", "saved", f"{self._modelName}-{self._optimizerName.upper()}.h5"))
+        OperateModel.saveModel(
+            self.model,
+            join(
+                "..",
+                "models",
+                "saved",
+                f"{self._modelName}-{self._optimizerName.upper()}.h5"
+            )
+        )
         print("\nModel Saved\n")
+
         print("\nLearning Curves\n")
-        modelOperator._printLearningCurves()
+        self.model._printLearningCurves()
         print("\n")
