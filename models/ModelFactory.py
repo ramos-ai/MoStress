@@ -14,6 +14,6 @@ class ModelFactory():
         elif (modelName == "BASELINE-LSTM"):
             return SequentialModels(moStressNeuralNetwork).lstmBaselineMostress()
         elif (modelName == "BASELINE-RESERVOIR"):
-            return ReservoirModels().baseline()
+            return ReservoirModels(moStressNeuralNetwork).baseline()
         else:
             raise Exception("Architecture not implemented.")

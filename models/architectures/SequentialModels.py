@@ -11,8 +11,10 @@ from tensorflow.python.keras.layers import (GRU, LSTM, Activation, Dense,
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.regularizers import L2
 
+from models.architectures.BaseArchitecture import BaseArchitecture
 
-class SequentialModels():
+
+class SequentialModels(BaseArchitecture):
     def __init__(self, moStressNeuralNetwork):
         self.moStressNeuralNetwork = moStressNeuralNetwork
 

@@ -16,7 +16,10 @@ class MoStressNeuralNetwork:
         self._numFeatures = self._xTrain.shape[2]
         self._numClasses = len(dataset["weights"])
 
-    def execute(self, modelName="REGULARIZER-LSTM", optimizer="rmsprop"):
+        self._reservoirRandomSeed = self.modelOpts["reservoirRandomSeed"]
+        self._reservoirVerbosityState = self.modelOpts["reservoirVerbosityState"]
+
+    def execute(self, modelName="REGULARIZER-LSTM", optimizer="rmsprop", modelArchitectureType="sequential"):
         '''As standard, the best model tested will be executed,
         to test other models, change methods parameters.
 
@@ -58,6 +61,7 @@ class MoStressNeuralNetwork:
         )
         print("\nModel Saved\n")
 
-        print("\nLearning Curves\n")
-        self.model._printLearningCurves()
-        print("\n")
+        if (modelArchitectureType == "sequential"):
+            print("\nLearning Curves\n")
+            self.model._printLearningCurves()
+            print("\n")
