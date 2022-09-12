@@ -30,7 +30,7 @@ Although , contributions to add those exploratory features or any other contribu
 ## 2. Prerequisites
 
 [![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen)](https://www.python.org/) [![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen)](https://pypi.org/) [![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red)](https://www.tensorflow.org/) [![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red)](https://scikit-learn.org/stable/) [![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)](https://pandas.pydata.org/)
-[![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red)](https://numpy.org/) [![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange)](https://matplotlib.org/) [![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)](https://seaborn.pydata.org/) [![ReservoirPy Version](https://img.shields.io/badge/reservoirpy-0.3.5-orange)](https://github.com/reservoirpy/reservoirpy)
+[![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red)](https://numpy.org/) [![ReservoirPy Version](https://img.shields.io/badge/reservoirpy-0.3.5-red)](https://github.com/reservoirpy/reservoirpy) [![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange)](https://matplotlib.org/) [![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)](https://seaborn.pydata.org/)
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is important to obtain the WESAD data in advance.
 
