@@ -7,14 +7,23 @@ from models.architectures.BaseArchitecture import BaseArchitecture
 class ReservoirModels(BaseArchitecture):
     def __init__(self, moStressNeuralNetwork):
         self.moStressNeuralNetwork = moStressNeuralNetwork
+
         set_seed(moStressNeuralNetwork._reservoirRandomSeed)
         verbosity(moStressNeuralNetwork._reservoirVerbosityState)
+
+        self._needEncoding = True
+        self._wesadThreeClassEncoder = {
+            "0": np.array([[1.0, 0.0, 0.0]]),
+            "1": np.array([[0.0, 1.0, 0.0]]),
+            "2": np.array([[0.0, 0.0, 1.0]]),
+        }
+
         self._xTrain = moStressNeuralNetwork._allTrainFeatures
-        self._yTrain = moStressNeuralNetwork._allTrainTargets
+        self._yTrain = [ self._wesadThreeClassEncoder[str(label)] for label in moStressNeuralNetwork._allTrainTargets ]
 
     ##############---ARCHITECTURES---##############
 
-    def baseline(self, numNodes = 128, spectralRatio = 0.9, leakingRate = 0.1, ridgeFactor = 1e-6):
+    def baseline(self, numNodes = 32, spectralRatio = 0.9, leakingRate = 0.1, ridgeFactor = 1e-6):
         self._source = Input()
         self._reservoir = Reservoir(numNodes, sr=spectralRatio, lr=leakingRate)
         self._readout = Ridge(ridge=ridgeFactor)
@@ -50,3 +59,6 @@ class ReservoirModels(BaseArchitecture):
         print("\nReturning Predictions\n")
         
         return self._yPred
+    
+    def _saveModel(self, path):
+        pass

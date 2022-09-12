@@ -1,9 +1,9 @@
+from wsgiref.util import request_uri
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
-from tensorflow import convert_to_tensor
 
 
 class EvaluateModel:
@@ -14,12 +14,17 @@ class EvaluateModel:
         self.featuresValidation = validationData["features"]
         self.targetValidation = validationData["targets"]
         self.classes = classes
+        if (self.model._needEncoding):
+            self.self.targetValidation = [ self.model._wesadThreeClassEncoder[str(label)] for label in validationData["targets"] ]
+        self.predictions = None
 
     def _makePredictions(self):
-        return self.model._makePredictions(self.featuresValidation)
+        self.predictions = self.model._makePredictions(self.featuresValidation)
 
     def getClassesPredicted(self):
-        return [np.argmax(probabilities) for probabilities in self._makePredictions()]
+        if (self.predictions is None):
+            return [np.argmax(probabilities) for probabilities in self._makePredictions()]
+        return self.predictions
 
     def _getConfusionMatrix(self):
         return confusion_matrix(self.targetValidation, self.getClassesPredicted())
