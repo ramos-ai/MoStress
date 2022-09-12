@@ -16,3 +16,7 @@ class BaseArchitecture(ABC):
     @abstractmethod
     def _makePredictions(self):
         pass
+
+    @abstractmethod
+    def _saveModel(self):
+        pass

@@ -115,6 +115,9 @@ class SequentialModels(BaseArchitecture):
     def _makePredictions(self, inputData):
         return self.model.predict(x=convert_to_tensor(inputData))
 
+    def _saveModel(self, path):
+        self.model.save(path)
+
     def _printLearningCurves(self, loss="Sparse Categorical Crossentropy"):
         plt.figure(figsize=(30, 15))
         plt.plot(
