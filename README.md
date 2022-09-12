@@ -56,7 +56,7 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ModelFactory.py```.
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture on ```models/architectures```, make your new architecture inherits ```models/architectures/BaseArchitecture.py```, and add the architecture call on ```models/architectures/ModelFactory.py```.
 
 Currently we have the follow architectures implemented:
 
@@ -64,12 +64,13 @@ Currently we have the follow architectures implemented:
 * REGULARIZER-LSTM,
 * BASELINE-GRU,
 * BASELINE-LSTM,
+* BASELINE-RESERVOIR
 
 The regularizer prefix means that we add a Ridge Regularizer and a Max Norm Bias on the output layer of the sequential model.
 
 Also, after we train the model, we save it on ```models/saved```
 
-If you want to test some customization on the model settings, please, check the the class ```moStress/neuralNetwork/modelHandler/OperateModel.py``` and adjust the parameters as needed.
+NOTE: we don't save the reservoir model yet.
 
 ## 5 Improvements
 
