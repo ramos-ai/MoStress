@@ -21,14 +21,16 @@ The resume of MoStress is shown on the image below:
 
 ![MoStress](./MoStressFull.jpg)
 
+The code with the results can be found on folder ```main```, and the folder ```experiments``` we have testing of new features.
+
 Also it is important to mention that this code it doesn't contain exploratory functions or methods, here is just the execution of MoStress.
 
 Although , contributions to add those exploratory features or any other contribution are really welcome, please, create your fork, branch and pull request to add it!
 
 ## 2. Prerequisites
 
-![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen) ![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen) ![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red) ![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red) ![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)
-![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red) ![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange) ![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)
+[![Python Version](https://img.shields.io/badge/python-3.9.7-brightgreen)](https://www.python.org/) [![Pip Version](https://img.shields.io/badge/pip-22.2.2-brightgreen)](https://pypi.org/) [![Tensorflow Version](https://img.shields.io/badge/tensorflow-2.9.1-red)](https://www.tensorflow.org/) [![Sklearn Version](https://img.shields.io/badge/sklearn-1.1.2-red)](https://scikit-learn.org/stable/) [![Pandas Version](https://img.shields.io/badge/pandas-1.4.3-red)](https://pandas.pydata.org/)
+[![Numpy Version](https://img.shields.io/badge/numpy-1.23.2-red)](https://numpy.org/) [![Matplotlib Version](https://img.shields.io/badge/matplotlib-3.5.3-orange)](https://matplotlib.org/) [![Seaborn Version](https://img.shields.io/badge/seaborn-0.11.2-orange)](https://seaborn.pydata.org/) [![ReservoirPy Version](https://img.shields.io/badge/reservoirpy-0.3.5-orange)](https://github.com/reservoirpy/reservoirpy)
 
 At this point in time, MoStress only support [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985?casa_token=JPRVzf9hoRAAAAAA:paazllad7xmErtVz4Z5SvhMGKakLlQJCbooGm93uLZXpTvkcsAyzd5QR8071z3Coc8r6qq5EF6s6), therefore, in order to run the code successfully, it is important to obtain the WESAD data in advance.
 
@@ -54,7 +56,7 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ArchitectureFactory.py```.
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture and add it on folder ```models/architectures/ModelFactory.py```.
 
 Currently we have the follow architectures implemented:
 
@@ -161,30 +163,40 @@ classDiagram
   WesadPhysioChest ..> Dataset: inherits
   DatasetFactory --|> WesadPhysioChest: make
 
-  class ArchitectureFactory {
+  class ModelFactory {
     +make(architectureName~string~, architectureOptions~dictionary~)
   }
-  class SequentialArchitectures{
-    +Int winSize
-    +Int numFeatures
-    +Int numClasses
+  class BaseArchitecture {
+    <<abstract>>     
+    -_compileModel()*
+    -_setModelCallbacks()*
+    -_fitModel()*
+    -_makePredictions()*
+    -_saveModel()*
+  }
+  class SequentialModels {
+    +MoStressNeuralNetwork moStressNeuralNetwork
 
     +gruRegularizerMoStress()
     +lstmRegularizerMoStress()
     +gruBaselineMostress()
     +lstmBaselineMostress()
+    -_compileModel()
+    -_setModelCallbacks()
+    -_fitModel()
+    -_makePredictions()
+    -_saveModel()
+    -_printLearningCurves()
   }
-  class OperateModel {
+  class ReservoirModels {
     +MoStressNeuralNetwork moStressNeuralNetwork
 
-    #saveModel()
-    #loadModel()
-    #_getTensorData()
-    -_createModel()
+    +baseline()
     -_compileModel()
-    -_fitModel()
     -_setModelCallbacks()
-    -_printLearningCurves()
+    -_fitModel()
+    -_makePredictions()
+    -_saveModel()
   }
   class EvaluateModel {
     +Any model
@@ -216,14 +228,20 @@ classDiagram
     +Any model
     +Dict history
     +String modelFullName
+    -Int _reservoirRandomSeed
+    -Int _reservoirVerbosityState
+    -List _allTrainFeatures
+    -List _allTrainTargets
 
     +execute()
   }
 
-ArchitectureFactory --|> SequentialArchitectures:make
-OperateModel *-- ArchitectureFactory: compose
-MoStressNeuralNetwork *-- OperateModel: compose
+ModelFactory --|> SequentialModels:make
+ModelFactory --|> ReservoirModels:make
+MoStressNeuralNetwork *-- ModelFactory: compose
 MoStressNeuralNetwork *-- EvaluateModel: evaluate
 MoStressPreprocessing --|> MoStressNeuralNetwork: input
+SequentialModels ..> BaseArchitecture: inherits
+ReservoirModels ..> BaseArchitecture: inherits
 
 ```

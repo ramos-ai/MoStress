@@ -11,5 +11,7 @@
     "windowSizeInSeconds": 60,
     "windowSlideStepInSeconds": 1,
     "percentageCountingThreshold": 70,
-    "trainingDataTestSize": 0.4
+    "trainingDataTestSize": 0.4,
+    "reservoirRandomSeed": 42,
+    "reservoirVerbosityState": 0
 }
