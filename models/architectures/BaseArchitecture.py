@@ -12,3 +12,7 @@ class BaseArchitecture(ABC):
     @abstractmethod
     def _fitModel(self):
         pass
+
+    @abstractmethod
+    def _makePredictions(self):
+        pass

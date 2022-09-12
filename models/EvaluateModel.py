@@ -7,15 +7,16 @@ from tensorflow import convert_to_tensor
 
 
 class EvaluateModel:
-    def __init__(self, model, modelName, validationData, classes=["Baseline", "Stress", "Amusement"]):
-        self.model = model
+    def __init__(self, validationData, modelName, model = None, classes=["Baseline", "Stress", "Amusement"]):
+        if (not model is None):
+            self.model = model
         self.modelName = modelName
         self.featuresValidation = validationData["features"]
         self.targetValidation = validationData["targets"]
         self.classes = classes
 
     def _makePredictions(self):
-        return self.model.predict(x=convert_to_tensor(self.featuresValidation))
+        return self.model._makePredictions(self.featuresValidation)
 
     def getClassesPredicted(self):
         return [np.argmax(probabilities) for probabilities in self._makePredictions()]

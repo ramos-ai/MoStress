@@ -18,6 +18,8 @@ class MoStressNeuralNetwork:
 
         self._reservoirRandomSeed = self.modelOpts["reservoirRandomSeed"]
         self._reservoirVerbosityState = self.modelOpts["reservoirVerbosityState"]
+        self._allTrainFeatures = dataset["features"]
+        self._allTrainTargets = dataset["targets"]
 
     def execute(self, modelName="REGULARIZER-LSTM", optimizer="rmsprop", modelArchitectureType="sequential"):
         '''As standard, the best model tested will be executed,

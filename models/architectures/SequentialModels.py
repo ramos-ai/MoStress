@@ -12,6 +12,7 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.regularizers import L2
 
 from models.architectures.BaseArchitecture import BaseArchitecture
+from tensorflow import convert_to_tensor
 
 
 class SequentialModels(BaseArchitecture):
@@ -110,6 +111,9 @@ class SequentialModels(BaseArchitecture):
             class_weight=self.moStressNeuralNetwork.weights,
             callbacks=self.moStressNeuralNetwork._callbacks
         )
+    
+    def _makePredictions(self, inputData):
+        return self.model.predict(x=convert_to_tensor(inputData))
 
     def _printLearningCurves(self, loss="Sparse Categorical Crossentropy"):
         plt.figure(figsize=(30, 15))

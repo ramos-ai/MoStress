@@ -9,8 +9,8 @@ class ReservoirModels(BaseArchitecture):
         self.moStressNeuralNetwork = moStressNeuralNetwork
         set_seed(moStressNeuralNetwork._reservoirRandomSeed)
         verbosity(moStressNeuralNetwork._reservoirVerbosityState)
-        self._xTrain = moStressNeuralNetwork.dataset["features"]
-        self._yTrain = moStressNeuralNetwork.dataset["targets"]
+        self._xTrain = moStressNeuralNetwork._allTrainFeatures
+        self._yTrain = moStressNeuralNetwork._allTrainTargets
 
     ##############---ARCHITECTURES---##############
 
@@ -49,4 +49,4 @@ class ReservoirModels(BaseArchitecture):
             self._yPred.append(y)
         print("\nReturning Predictions\n")
         
-        return [ np.argmax(y) for y in self._yPred ]
+        return self._yPred
