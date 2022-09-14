@@ -7,7 +7,7 @@
   * 4.1 [Preprocessing Step](#41-preprocessing-step)
     * 4.1.1 [Config File](#411-config-file)
     * 4.2.2 [Implemented Steps](#412-implemented-steps)
-  * 4.2 [Recurrent Neural Network Architecture](#42-recurrent-neural-network-architecture)
+  * 4.2 [Neural Network Architecture](#42-neural-network-architecture)
 * 5. [Improvements](#5-improvements)
 * 6. [Future Work](#6-future-work)
 * 7. [Publications](#7-publications)
@@ -55,7 +55,7 @@ On ```moStress/preprocessing``` we have the main class ```MoStressPreprocessing.
 
 Each step were implemented as classes on ```moStress/preprocessing/implementedSteps``` folder, and they all extends the abstract class: ```moStress/preprocessing/implementedSteps/Steps.py```, so if you want to implement a new step, please, inherit this class also.
 
-### 4.2 Recurrent Neural Network Architecture
+### 4.2 Neural Network Architecture
 
 The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture on ```models/architectures```, make your new architecture inherits of the abstract class ```models/architectures/BaseArchitecture.py```, and add the architecture call on ```models/architectures/ModelFactory.py```.
 
