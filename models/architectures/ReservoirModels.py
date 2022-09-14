@@ -23,7 +23,7 @@ class ReservoirModels(BaseArchitecture):
 
     ##############---ARCHITECTURES---##############
 
-    def baseline(self, numNodes = 32, spectralRatio = 0.9, leakingRate = 0.1, ridgeFactor = 1e-6):
+    def baseline(self, numNodes = 64, spectralRatio = 0.9, leakingRate = 0.1, ridgeFactor = 1e-6):
         self._source = Input()
         self._reservoir = Reservoir(numNodes, sr=spectralRatio, lr=leakingRate)
         self._readout = Ridge(ridge=ridgeFactor)
