@@ -10,12 +10,13 @@
   * 4.2 [Recurrent Neural Network Architecture](#42-recurrent-neural-network-architecture)
 * 5. [Improvements](#5-improvements)
 * 6. [Future Work](#6-future-work)
+* 7. [Publications](#7-publications)
 * [Appendix](#appendix)
   * A. [Code Architecture](#a-code-architecture)
 
 ## 1. Introduction
 
-This is the implementation of MoStress: a sequence model for stress classification. For more information about the model itself and all the processes and experiments around it, please, read: [MoStress: a Sequence Model for Stress Classification](https://gdoramos.net/publications/). For more questions and discussions, please contact me or any of the authors of the previous article.
+This is the implementation of MoStress: a sequence model for stress classification. For more information about the model itself and all the processes and experiments around it, please see the articles on [Publications](#7-publications) section . For more questions and discussions, please contact any of the authors of this repository.
 
 The resume of MoStress is shown on the image below:
 
@@ -83,6 +84,34 @@ NOTE: we don't save the reservoir model yet.
 
 1. Change the RNN for reservoir computing or spiking neural networks;
 2. Use N-BEATS, with or without the preprocessing step.
+3. Use MoStress with new datasets
+
+## 7. Publications
+
+Here is our publications:
+
+1. A. de Souza, M. B. Melchiades, S. J. Rigo, G. de. O. Ramos, Mostress:
+a sequence model for stress classification, in: 2022 International Joint
+Conference on Neural Networks (IJCNN), IEEE, Padova, Italy, 2022.
+Forthcoming. [Link](https://gdoramos.net/publications/)
+
+And here is how you can cite this research:
+
+```typescript
+@InProceedings{deSouza2022ijcnn,
+  author = {{\relax de} Souza, Arturo and Melchiades, Mateus B. and Rigo, Sandro J. and Ramos, Gabriel {\relax de} O.},
+  title = {MoStress: a Sequence Model for Stress Classification},
+  booktitle = {2022 International Joint Conference on Neural Networks (IJCNN)},
+  OPTpages = {},
+  year = {2022},
+  address = {Padova, Italy},
+  month = {July},
+  publisher = {IEEE},
+  OPTdoi = {},
+  OPTurl = {https://doi.org/},
+  note = {Forthcoming}
+}
+```
 
 ## Appendix
 
@@ -246,3 +275,7 @@ SequentialModels ..> BaseArchitecture: inherits
 ReservoirModels ..> BaseArchitecture: inherits
 
 ```
+
+## License
+
+This project uses the following license: [MIT](./LICENSE.md).
