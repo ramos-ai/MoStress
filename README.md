@@ -57,7 +57,9 @@ Each step were implemented as classes on ```moStress/preprocessing/implementedSt
 
 ### 4.2 Recurrent Neural Network Architecture
 
-The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture on ```models/architectures```, make your new architecture inherits ```models/architectures/BaseArchitecture.py```, and add the architecture call on ```models/architectures/ModelFactory.py```.
+The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture on ```models/architectures```, make your new architecture inherits of the abstract class ```models/architectures/BaseArchitecture.py```, and add the architecture call on ```models/architectures/ModelFactory.py```.
+
+We also advice that you pass a instance of the class ```MoStressNeuralNetwork``` as the constructor of your new model, since this class may already have utils properties to your model.
 
 Currently we have the follow architectures implemented:
 
