@@ -24,8 +24,12 @@ class WindowsLabelling(Steps):
             raise Exception("Windows Labelling failled.")
 
     def _getElementArrayFrequency(self, npArray):
-        (uniqueElements, elementsCount) = np.unique(
-            npArray, return_counts=True, axis=0)
+        try:
+            (uniqueElements, elementsCount) = np.unique(
+                npArray, return_counts=True, axis=0)
+        except TypeError:
+            (uniqueElements, elementsCount)  = np.unique(npArray.astype("<U22"), axis=0,
+                return_counts=True)
 
         mostFrequentElementIndexes = np.where(
             elementsCount == max(elementsCount))
@@ -52,7 +56,7 @@ class WindowsLabelling(Steps):
             if (str(windowLabel) in self.moStressPreprocessing.targetsClassesMapping):
                 if (labelFrequency >= self.moStressPreprocessing._countingThreshold):
                     featuresWindowsArray.append(df[slicer].to_numpy())
-                    targetsLabelsArray.append(windowLabel - 1)
+                    targetsLabelsArray.append(int(windowLabel) - 1)
                 else:
                     discardedWindowsCounter[str(windowLabel)] += 1
 

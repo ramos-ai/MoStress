@@ -1,10 +1,27 @@
 {
-    "features": ["ECG", "EMG", "EDA", "Temp", "Resp"],
+    "features" : {
+        "WESAD" : ["ECG", "EMG", "EDA", "Temp", "Resp"],
+        "SIFv1" : ["ECG", "EDA", "RSP"],
+        "SIFv2" : ["ECG", "EDA", "RSP"]
+    }
+    ,
     "targets": "label_id",
     "targetsClassesMapping": {
-        "1": "Baseline",
-        "2": "Stress",
-        "3": "Amusement"
+        "WESAD" : {
+            "1": "Baseline",
+            "2": "Stress",
+            "3": "Amusement"
+        },
+        "SIFv1" : {
+            "0": "Pre-stress",
+            "1": "Stress",
+            "2": "Post-stress"
+        },
+        "SIFv2" : {
+            "0": "Pre-stress",
+            "1": "Stress",
+            "2": "Post-stress"
+        }
     },
     "datasetSamplePeriod": 700,
     "resamplingPeriod": 100,

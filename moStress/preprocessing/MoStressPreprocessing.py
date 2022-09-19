@@ -6,9 +6,12 @@ from moStress.preprocessing.implementedSteps.WindowsLabelling import \
 
 
 class MoStressPreprocessing:
-    def __init__(self, modelOpts, dataset) -> None:
+    def __init__(self, modelOpts, dataset, datasetName) -> None:
         self.modelOpts = modelOpts
         self.quantityOfSets = len(dataset)
+
+        features = self.modelOpts.get("features", {})
+        targetsClassesMapping = self.modelOpts.get("targetsClassesMapping", {})
 
         self._datasetSamplePeriod = self.modelOpts["datasetSamplePeriod"]
         self._resamplingPeriod = self.modelOpts["resamplingPeriod"]
@@ -17,14 +20,14 @@ class MoStressPreprocessing:
         self._winStep = self.modelOpts["windowSlideStepInSeconds"]
 
         self.features = [data[::self._resamplingPeriod]
-                         [self.modelOpts["features"]] for data in dataset]
+                         [features.get(datasetName)] for data in dataset]
         self.targets = [data[::self._resamplingPeriod]
                         [self.modelOpts["targets"]] for data in dataset]
         self._winNumberBySubject = [len(range(
             0, len(data) - self._winSize + 1, self._winStep)) for data in self.features]
 
         self._countingThreshold = self.modelOpts["percentageCountingThreshold"] / 100
-        self.targetsClassesMapping = self.modelOpts["targetsClassesMapping"]
+        self.targetsClassesMapping = targetsClassesMapping.get(datasetName)
 
         self.discardedWindowsCounter = []
 

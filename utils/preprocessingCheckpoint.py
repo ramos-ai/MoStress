@@ -8,8 +8,16 @@ trainingDataPath = os.path.join(
 validationDataPath = os.path.join(
     saveDataPathRoot, "validation", "validationData.pickle")
 
+def checkPreprocessingCheckpoint():
+    os.makedirs(f"{saveDataPathRoot}/training", exist_ok=True)
+    os.makedirs(f"{saveDataPathRoot}/validation", exist_ok=True)
 
-def setPreprocessingCheckpoint(moStressPreprocessing):
+def setPreprocessingCheckpoint(moStressPreprocessing, dataset):
+    checkPreprocessingCheckpoint()
+    trainingDataPath = os.path.join(
+        saveDataPathRoot, "training", f"trainingData{dataset}.pickle")
+    validationDataPath = os.path.join(
+        saveDataPathRoot, "validation", f"validationData{dataset}.pickle")
 
     Dataset.saveData(
         trainingDataPath,
