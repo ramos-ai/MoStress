@@ -3,10 +3,13 @@ import os
 from datasets.Dataset import Dataset
 
 saveDataPathRoot = os.path.join("..","data", "preprocessedData")
-trainingDataPath = os.path.join(
-    saveDataPathRoot, "training", "trainingData.pickle")
-validationDataPath = os.path.join(
-    saveDataPathRoot, "validation", "validationData.pickle")
+
+def datasetDataFiles(dataset):
+    trainingDataPath = os.path.join(
+        saveDataPathRoot, "training", f"trainingData{dataset}.pickle")
+    validationDataPath = os.path.join(
+        saveDataPathRoot, "validation", f"validationData{dataset}.pickle")
+    return trainingDataPath, validationDataPath
 
 def checkPreprocessingCheckpoint():
     os.makedirs(f"{saveDataPathRoot}/training", exist_ok=True)
@@ -14,10 +17,7 @@ def checkPreprocessingCheckpoint():
 
 def setPreprocessingCheckpoint(moStressPreprocessing, dataset):
     checkPreprocessingCheckpoint()
-    trainingDataPath = os.path.join(
-        saveDataPathRoot, "training", f"trainingData{dataset}.pickle")
-    validationDataPath = os.path.join(
-        saveDataPathRoot, "validation", f"validationData{dataset}.pickle")
+    trainingDataPath, validationDataPath = datasetDataFiles(dataset)
 
     Dataset.saveData(
         trainingDataPath,
@@ -37,8 +37,9 @@ def setPreprocessingCheckpoint(moStressPreprocessing, dataset):
     )
 
 
-def getPreprocessingCheckpoint():
+def getPreprocessingCheckpoint(dataset):
     if (not os.listdir(saveDataPathRoot)):
         raise Exception("You need to set the checkpoint first.")
+    trainingDataPath, validationDataPath = datasetDataFiles(dataset)
     return Dataset.loadData(trainingDataPath), Dataset.loadData(validationDataPath)
 

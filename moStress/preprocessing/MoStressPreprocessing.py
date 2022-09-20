@@ -7,6 +7,7 @@ from moStress.preprocessing.implementedSteps.WindowsLabelling import \
 
 class MoStressPreprocessing:
     def __init__(self, modelOpts, dataset, datasetName) -> None:
+        self.datasetName = datasetName
         self.modelOpts = modelOpts
         self.quantityOfSets = len(dataset)
 

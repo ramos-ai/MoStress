@@ -1,4 +1,7 @@
 {
+    "datasetList" : [
+        "WESAD"
+    ],
     "features" : {
         "WESAD" : ["ECG", "EMG", "EDA", "Temp", "Resp"],
         "SIFv1" : ["ECG", "EDA", "RSP"],

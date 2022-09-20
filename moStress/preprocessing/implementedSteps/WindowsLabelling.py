@@ -56,7 +56,8 @@ class WindowsLabelling(Steps):
             if (str(windowLabel) in self.moStressPreprocessing.targetsClassesMapping):
                 if (labelFrequency >= self.moStressPreprocessing._countingThreshold):
                     featuresWindowsArray.append(df[slicer].to_numpy())
-                    targetsLabelsArray.append(int(windowLabel) - 1)
+                    ref = 1 if self.moStressPreprocessing.datasetName == "WESAD" else 0
+                    targetsLabelsArray.append(int(windowLabel) - ref)
                 else:
                     discardedWindowsCounter[str(windowLabel)] += 1
 
