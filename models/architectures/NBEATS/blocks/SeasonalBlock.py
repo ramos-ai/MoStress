@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow import keras
+from tensorflow.python import keras
 import tensorflow.python.keras.backend as K
 
 class SeasonalBlock(keras.layers.Layer):

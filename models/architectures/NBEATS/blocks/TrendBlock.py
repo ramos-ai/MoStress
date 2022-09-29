@@ -1,4 +1,4 @@
-from tensorflow import keras
+from tensorflow.python import keras
 import tensorflow.python.keras.backend as K
 
 class TrendBlock(keras.layers.Layer):

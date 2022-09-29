@@ -1,8 +1,8 @@
 from tensorflow import keras
-from tensorflow.python.keras import Model
+from tensorflow.keras import Model
 from models.architectures.NBEATS.blocks.NBEATS import NBEATS
 
-class NBeatsModel():
+class NBEATSModel():
     
     def __init__(self, 
                  model_type:str           = 'generic',
@@ -22,6 +22,7 @@ class NBeatsModel():
                  loss:str                 = 'mae',
                  learning_rate:float      = 0.001,
                  batch_size: int          = 1024):
+                 
         """
         
         Model used to create and initialize N-Beats model described in the following paper: https://arxiv.org/abs/1905.10437
@@ -89,7 +90,7 @@ class NBeatsModel():
         
         """
         inputs     = keras.layers.Input(shape = (self.horizon * self.lookback, ), dtype = 'float')
-        forecasts  = self.model_layer(inputs)
+        forecasts = self.model_layer(inputs)
         self.model = Model(inputs, forecasts)
         return self
         
