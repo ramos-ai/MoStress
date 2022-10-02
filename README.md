@@ -101,7 +101,7 @@ And here is how you can cite this research:
 
 ```bibtex
 @INPROCEEDINGS{deSouza2022ijcnn,
-  author = {{\relax de} Souza, Arturo and Melchiades, Mateus B. and Rigo, Sandro J. and Ramos, Gabriel {\relax de} O.},
+  author={de Souza, Arturo and Melchiades, Mateus B. and Rigo, Sandro J. and Ramos, Gabriel de O.},
   title = {MoStress: a Sequence Model for Stress Classification},
   booktitle = {2022 International Joint Conference on Neural Networks (IJCNN)},
   year = {2022},
