@@ -90,7 +90,9 @@ class NBEATSModel():
         
         """
         inputs     = keras.layers.Input(shape = (self.horizon * self.lookback, ), dtype = 'float')
-        forecasts = self.model_layer(inputs)
+        forecasts, residuals, backcastHist = self.model_layer(inputs)
+        self.backcastHist = Model(inputs, backcastHist)
+        self.residuals = Model(inputs, residuals)
         self.model = Model(inputs, forecasts)
         return self
         
