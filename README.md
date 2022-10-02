@@ -95,23 +95,21 @@ Here is our publications:
 1. A. de Souza, M. B. Melchiades, S. J. Rigo, G. de. O. Ramos, Mostress:
 a sequence model for stress classification, in: 2022 International Joint
 Conference on Neural Networks (IJCNN), IEEE, Padova, Italy, 2022.
-Forthcoming. [Link](https://gdoramos.net/publications/)
+Forthcoming. [Link](https://ieeexplore.ieee.org/document/9892953)
 
 And here is how you can cite this research:
 
 ```bibtex
-@InProceedings{deSouza2022ijcnn,
-  author = {{\relax de} Souza, Arturo and Melchiades, Mateus B. and Rigo, Sandro J. and Ramos, Gabriel {\relax de} O.},
+@INPROCEEDINGS{deSouza2022ijcnn,
+  author={de Souza, Arturo and Melchiades, Mateus B. and Rigo, Sandro J. and Ramos, Gabriel de O.},
   title = {MoStress: a Sequence Model for Stress Classification},
   booktitle = {2022 International Joint Conference on Neural Networks (IJCNN)},
-  OPTpages = {},
   year = {2022},
   address = {Padova, Italy},
   month = {July},
   publisher = {IEEE},
-  OPTdoi = {},
-  OPTurl = {https://doi.org/},
-  note = {Forthcoming}
+  pages={1-8},
+  doi={10.1109/IJCNN55064.2022.9892953}
 }
 ```
 
