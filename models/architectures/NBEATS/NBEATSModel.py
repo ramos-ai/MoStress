@@ -1,8 +1,8 @@
 from tensorflow import keras
 from tensorflow.keras import Model
-from models.architectures.NBEATS.blocks.NBEATS import NBEATS
+from models.architectures.NBeats.blocks.NBeatsBlock import NBeatsBlock
 
-class NBEATSModel():
+class NBeatsModel():
     
     def __init__(self, 
                  model_type:str           = 'generic',
@@ -76,7 +76,7 @@ class NBEATSModel():
         :returns: self
         
         """
-        self.model_layer = NBEATS(**self.__dict__)
+        self.model_layer = NBeatsBlock(**self.__dict__)
         return self
         
     def build_model(self):
@@ -90,10 +90,9 @@ class NBEATSModel():
         
         """
         inputs     = keras.layers.Input(shape = (self.horizon * self.lookback, ), dtype = 'float')
-        forecasts, residuals, backcastHist = self.model_layer(inputs)
-        self.backcastHist = Model(inputs, backcastHist)
-        self.residuals = Model(inputs, residuals)
+        forecasts, residuals = self.model_layer(inputs)
         self.model = Model(inputs, forecasts)
+        self.residualModel = Model(inputs, residuals)
         return self
         
     def fit(self, X, y, **kwargs):
@@ -115,7 +114,7 @@ class NBEATSModel():
         self.build_model()
         self.model.compile(optimizer = keras.optimizers.Adam(self.learning_rate), 
                            loss      = [self.loss],
-                           metrics   = ['mae', 'mape'])
+                           metrics   = ['mae', 'mape'], run_eagerly=False)
         self.model.fit(X, y, batch_size = self.batch_size, **kwargs)
         return self
         

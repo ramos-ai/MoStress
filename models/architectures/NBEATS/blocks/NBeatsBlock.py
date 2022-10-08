@@ -1,11 +1,11 @@
 from tensorflow import keras
 import tensorflow as tf
 import tensorflow.keras.backend as K
-from models.architectures.NBEATS.blocks.GenericBlock import GenericBlock
-from models.architectures.NBEATS.blocks.TrendBlock import TrendBlock
-from models.architectures.NBEATS.blocks.SeasonalBlock import SeasonalBlock
+from models.architectures.NBeats.blocks.GenericBlock import GenericBlock
+from models.architectures.NBeats.blocks.TrendBlock import TrendBlock
+from models.architectures.NBeats.blocks.SeasonalBlock import SeasonalBlock
 
-class NBEATS(keras.layers.Layer):
+class NBeatsBlock(keras.layers.Layer):
 
     def __init__(self,
                  model_type           = 'generic',
@@ -23,7 +23,7 @@ class NBEATS(keras.layers.Layer):
                  num_harmonics        = 1,
                  polynomial_term      = 3,
                  **kwargs):
-        super(NBEATS, self).__init__()
+        super(NBeatsBlock, self).__init__()
         """Final N-Beats model that combines different blocks.  Inputs:
             model_type: str -> type of architecture to use.  Must be one of
                                ['generic', 'interpretable']
@@ -75,8 +75,6 @@ class NBEATS(keras.layers.Layer):
         self.num_seasonal_layers  = num_seasonal_layers
         self.num_harmonics        = num_harmonics
         self.polynomial_term      = polynomial_term
-        self._residual_collection = {}
-        self.sess = tf.compat.v1.Session()
     
         # Model architecture is pretty simple: depending on model type, stack
         # appropriate number of blocks on top of one another
@@ -104,12 +102,10 @@ class NBEATS(keras.layers.Layer):
     def call(self, inputs):
         residuals = K.reverse(inputs, axes = 0)
         forecast  = inputs[:, -1:]
-        backcastHist = {}
-        i = 0
+        residual_collection, i = {}, 0
         for block in self.blocks_:
             backcast, block_forecast = block(residuals)
             residuals = keras.layers.Subtract()([residuals, backcast])
             forecast  = keras.layers.Add()([forecast, block_forecast])
-            backcastHist[i] = backcast
-            self._residual_collection[i], i = residuals, i + 1
-        return forecast, self._residual_collection, backcastHist
+            residual_collection[i], i = residuals, i + 1
+        return forecast, residual_collection
