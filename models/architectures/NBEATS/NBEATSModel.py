@@ -94,6 +94,15 @@ class NBeatsModel():
         self.model = Model(inputs, forecasts)
         self.residualModel = Model(inputs, residuals)
         return self
+      
+    def compile_model(self, run_eagerly=False):
+      self.build_layer()
+      self.build_model()
+      self.model.compile(optimizer = keras.optimizers.Adam(self.learning_rate), 
+                          loss      = [self.loss],
+                          metrics   = ['mae', 'mape'], run_eagerly=run_eagerly)
+      self.model.summary()
+      return self
         
     def fit(self, X, y, **kwargs):
         """
@@ -110,11 +119,7 @@ class NBeatsModel():
           
         :returns: self  
         """
-        self.build_layer()
-        self.build_model()
-        self.model.compile(optimizer = keras.optimizers.Adam(self.learning_rate), 
-                           loss      = [self.loss],
-                           metrics   = ['mae', 'mape'], run_eagerly=False)
+        self.compile_model()
         self.model.fit(X, y, batch_size = self.batch_size, **kwargs)
         return self
         
