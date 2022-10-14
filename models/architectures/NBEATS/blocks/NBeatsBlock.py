@@ -99,6 +99,10 @@ class NBeatsBlock(keras.layers.Layer):
                                           num_harmonics = num_harmonics)
                             for _ in range(num_seasonal_stacks)]
         
+    def get_config(self):
+        cfg = super().get_config()
+        return cfg
+
     def call(self, inputs):
         residuals = K.reverse(inputs, axes = 0)
         forecast  = inputs[:, -1:]

@@ -92,10 +92,10 @@ NOTE: we don't save the reservoir model yet.
 
 Here is our publications:
 
-1. A. de Souza, M. B. Melchiades, S. J. Rigo, G. de. O. Ramos, Mostress:
+1. A. de Souza, M. B. Melchiades, S. J. Rigo, G. d. O. Ramos, Mostress:
 a sequence model for stress classification, in: 2022 International Joint
-Conference on Neural Networks (IJCNN), IEEE, Padova, Italy, 2022.
-Forthcoming. [Link](https://ieeexplore.ieee.org/document/9892953)
+Conference on Neural Networks (IJCNN), IEEE, Padova, Italy, 2022,
+pp. 1–8. doi:10.1109/IJCNN55064.2022.9892953. [Link](https://ieeexplore.ieee.org/document/9892953)
 
 And here is how you can cite this research:
 

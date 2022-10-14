@@ -5,15 +5,24 @@ from models.ModelFactory import ModelFactory
 
 
 class MoStressNeuralNetwork:
-    def __init__(self, modelOpts, dataset):
+    def __init__(self, modelOpts, dataset, skipAutoTrainTestSplit=False):
         self.modelOpts = modelOpts
 
         self.weights = dataset["weights"]
-        self._xTrain, self._xTest, self._yTrain, self._yTest = OperateModel._getTensorData(
-            dataset["features"], dataset["targets"], self.modelOpts["trainingDataTestSize"])
+        if not skipAutoTrainTestSplit:
+            (
+                self._xTrain,
+                self._xTest,
+                self._yTrain,
+                self._yTest,
+            ) = OperateModel._getTensorData(
+                dataset["features"],
+                dataset["targets"],
+                self.modelOpts["trainingDataTestSize"],
+            )
 
-        self._winSize = self._xTrain.shape[1]
-        self._numFeatures = self._xTrain.shape[2]
+        self._winSize = dataset["features"][0].shape[0]
+        self._numFeatures = dataset["features"][0].shape[1]
         self._numClasses = len(dataset["weights"])
 
         self._reservoirRandomSeed = self.modelOpts["reservoirRandomSeed"]
@@ -21,11 +30,16 @@ class MoStressNeuralNetwork:
         self._allTrainFeatures = dataset["features"]
         self._allTrainTargets = dataset["targets"]
 
-    def execute(self, modelName="REGULARIZER-LSTM", optimizer="rmsprop", modelArchitectureType="sequential"):
-        '''As standard, the best model tested will be executed,
+    def execute(
+        self,
+        modelName="REGULARIZER-LSTM",
+        optimizer="rmsprop",
+        modelArchitectureType="sequential",
+    ):
+        """As standard, the best model tested will be executed,
         to test other models, change methods parameters.
 
-        The options of models available are the following: 
+        The options of models available are the following:
 
             OPTIONS:
                 - REGULARIZER-GRU,
@@ -33,7 +47,8 @@ class MoStressNeuralNetwork:
                 - BASELINE-GRU,
                 - BASELINE-LSTM,
                 - BASELINE-RESERVOIR
-        '''
+                - NBEATS-FEATURE-EXTRACTOR
+        """
 
         self._modelName = modelName
         self._optimizerName = optimizer
@@ -57,12 +72,12 @@ class MoStressNeuralNetwork:
                 "..",
                 "models",
                 "saved",
-                f"{self._modelName}-{self._optimizerName.upper()}.h5"
+                f"{self._modelName}-{self._optimizerName.upper()}.h5",
             )
         )
         print("\nModel Saved\n")
 
-        if (modelArchitectureType == "sequential"):
+        if modelArchitectureType == "sequential":
             print("\nLearning Curves\n")
             self.model._printLearningCurves()
             print("\n")

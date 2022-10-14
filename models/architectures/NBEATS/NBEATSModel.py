@@ -21,7 +21,7 @@ class NBeatsModel():
                  polynomial_term:int      = 3,
                  loss:str                 = 'mae',
                  learning_rate:float      = 0.001,
-                 batch_size: int          = 1024):
+                 batch_size: int          = 1024):    
                  
         """
         
@@ -65,6 +65,10 @@ class NBeatsModel():
         self.loss                 = loss
         self.learning_rate        = learning_rate
         self.batch_size           = batch_size
+    
+    def get_config(self):
+        cfg = super().get_config()
+        return cfg
         
     def build_layer(self):
         """
@@ -101,7 +105,6 @@ class NBeatsModel():
       self.model.compile(optimizer = keras.optimizers.Adam(self.learning_rate), 
                           loss      = [self.loss],
                           metrics   = ['mae', 'mape'], run_eagerly=run_eagerly)
-      self.model.summary()
       return self
         
     def fit(self, X, y, **kwargs):
