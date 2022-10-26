@@ -14,6 +14,7 @@ class Logger(keras.callbacks.Callback):
         self.component = component
         self.logLevel = logLevel
         self._config = dotenv_values("./.env")
+        self._SEND_TELEGRAM_MESSAGES = self._config.get("SEND_TELEGRAM_MESSAGES")
         self._BOT_TOKEN = self._config.get("MOSTRESS_REPORTER_BOT_TELEGRAM_API_TOKEN")
         self._CHAT_ID = self._config.get("MOSTRESS_EXPERIMENTS_LOGS_CHAT_ID")
         self._baseUrl = f"https://api.telegram.org/bot{self._BOT_TOKEN}/sendMessage?chat_id={self._CHAT_ID}"
@@ -30,11 +31,12 @@ class Logger(keras.callbacks.Callback):
 
     def _sendMessageToTelegramGroup(self, message):
         url = self._baseUrl + f"&text={message}"
-        try:
-            requests.get(url)
-        except requests.exceptions.RequestException as e:
-            msg = f"Unable to send message. Error: {e}"
-            print(msg)
+        if (self._SEND_TELEGRAM_MESSAGES): 
+            try:
+                requests.get(url)
+            except requests.exceptions.RequestException as e:
+                msg = f"Unable to send message. Error: {e}"
+                print(msg)
 
     def write(self, message):
         if self.logLevel == LogLevel.INFO:
