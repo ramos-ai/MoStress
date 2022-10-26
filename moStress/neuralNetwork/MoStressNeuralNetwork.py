@@ -2,6 +2,9 @@ from os.path import join
 
 from utils.OperateModel import OperateModel
 from models.ModelFactory import ModelFactory
+from utils.Logger import Logger, LogLevel
+
+logInfo = Logger("MoStressNeuralNetwork Wrapper", LogLevel.INFO)
 
 
 class MoStressNeuralNetwork:
@@ -54,19 +57,19 @@ class MoStressNeuralNetwork:
         self._optimizerName = optimizer
         self.modelFullName = f"{self._modelName}-{self._optimizerName.upper()}"
 
-        print(f"Starting MoStress with model: {self.modelFullName}.\n")
+        logInfo(f"Starting MoStress with model: {self.modelFullName}.\n")
         self.model = ModelFactory().make(self, self._modelName)
 
-        print(f"\nCompiling model with optimizer: {self._optimizerName}\n")
+        logInfo(f"\nCompiling model with optimizer: {self._optimizerName}\n")
         self.model._compileModel()
-        print("\nModel Compiled\n")
+        logInfo("\nModel Compiled\n")
 
-        print("\nFitting Model\n")
+        logInfo("\nFitting Model\n")
         self.model._setModelCallbacks()
         self.model._fitModel()
-        print("\nModel Fitted\n")
+        logInfo("\nModel Fitted\n")
 
-        print("\Saving Model\n")
+        logInfo("\Saving Model\n")
         self.model._saveModel(
             join(
                 "..",
@@ -75,9 +78,9 @@ class MoStressNeuralNetwork:
                 f"{self._modelName}-{self._optimizerName.upper()}.h5",
             )
         )
-        print("\nModel Saved\n")
+        logInfo("\nModel Saved\n")
 
         if modelArchitectureType == "sequential":
-            print("\nLearning Curves\n")
+            logInfo("\nLearning Curves\n")
             self.model._printLearningCurves()
-            print("\n")
+            logInfo("\n")

@@ -23,23 +23,21 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow import convert_to_tensor
 
 from utils.OperateModel import OperateModel
+from utils.Logger import Logger, LogLevel
 
+logInfo = Logger("NBeatsFeatureExtractor Architecture", LogLevel.INFO)
 
 class NBeatsFeatureExtractor(BaseArchitecture):
     def __init__(self, moStressNeuralNetwork):
         self.moStressNeuralNetwork = moStressNeuralNetwork
         self.nBeats = NBeatsModel(lookback=7, horizon=1)
         self.residualsPath = (
-            os.path.join(
-                "..", "data", "preprocessedData", "residuals", "residuals.pickle"
-            ),
+            os.path.join("data", "preprocessedData", "residuals", "residuals.pickle"),
         )
-        self.nBeatsSavedModelBasePath = {
-            "..", "models", "saved", "nBeats"
-        }
+        self.nBeatsSavedModelBasePath = {"models", "saved", "nBeats"}
         self.residuals = (
             Dataset.loadData(self.residualsPath)
-            if "residuals" in os.listdir(os.path.join("..", "data", "preprocessedData"))
+            if "residuals" in os.listdir(os.path.join("data", "preprocessedData"))
             else {}
         )
         self._modelName = self.moStressNeuralNetwork._modelName
@@ -51,7 +49,9 @@ class NBeatsFeatureExtractor(BaseArchitecture):
     def classificationModel(self):
         model = Sequential()
         model.add(
-            Dense(256, input_shape=(len(self.residuals), )) # Maybe the input_shape is wrong, so maybe we would have an error on _fit because of this.
+            Dense(
+                256, input_shape=(len(self.residuals),)
+            )  # Maybe the input_shape is wrong, so maybe we would have an error on _fit because of this.
         )
         model.add(ReLU())
         model.add(Dropout(0.3))
@@ -146,28 +146,25 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         plt.legend(loc="upper left")
         plt.grid(True)
         plt.show()
+        plt.savefig("confusionMatrix.png")
 
     def _setModelCallbacksPath(self):
-            currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-            tensorBoardFilesPath = os.path.join(
-                "..",
-                "..",
-                "logs",
-                f"{self._modelName}",
-                f"{self._modelOptimizer}",
-                "fit",
-                currentTime,
-            )
-            trainingCheckpointPath = os.path.join(
-                "..",
-                "..",
-                "trainingCheckpoint",
-                f"{self._modelName}",
-                f"{self._modelOptimizer}",
-                "cp.ckpt",
-            )
+        currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorBoardFilesPath = os.path.join(
+            "logs",
+            f"{self._modelName}",
+            f"{self._modelOptimizer}",
+            "fit",
+            currentTime,
+        )
+        trainingCheckpointPath = os.path.join(
+            "trainingCheckpoint",
+            f"{self._modelName}",
+            f"{self._modelOptimizer}",
+            "cp.ckpt",
+        )
 
-            return tensorBoardFilesPath, trainingCheckpointPath
+        return tensorBoardFilesPath, trainingCheckpointPath
 
     def prepareResidualsDataset(self, epochs=100, verbose=1):
 
@@ -176,21 +173,29 @@ class NBeatsFeatureExtractor(BaseArchitecture):
             fullSignal = np.concatenate(self.moStressNeuralNetwork._allTrainFeatures)
 
             for i in range(fullSignal.shape[1]):
-                print(f"\n NBeats Training for Time Series number {i}: Starting Now. \n")
-                X, y = prep_time_series(fullSignal[:,i], lookback=7, horizon=1)
+                logInfo(
+                    f"\n NBeats Training for Time Series number {i}: Starting Now. \n"
+                )
+                X, y = prep_time_series(fullSignal[:, i], lookback=7, horizon=1)
                 self.nBeats.fit(
                     X, y, epochs=epochs, verbose=verbose, callbacks=self._callbacks
                 )
-                print(f"\n NBeats Training for Time Series number {i}: Finished. \n")
-                print(f"\n Saving Model \n")
-                self.nBeats.model.save(os.path.join(self.nBeatsSavedModelBasePath, f"nBeatsTimeSeries_{i}.h5"))
-                print(f"\n Getting Residuals for Time Series number {i}. \n")
-                for j, window in enumerate(self.moStressNeuralNetwork._allTrainFeatures):
+                logInfo(f"\n NBeats Training for Time Series number {i}: Finished. \n")
+                logInfo(f"\n Saving Model \n")
+                self.nBeats.model.save(
+                    os.path.join(
+                        self.nBeatsSavedModelBasePath, f"nBeatsTimeSeries_{i}.h5"
+                    )
+                )
+                logInfo(f"\n Getting Residuals for Time Series number {i}. \n")
+                for j, window in enumerate(
+                    self.moStressNeuralNetwork._allTrainFeatures
+                ):
                     windowResidual = {}
-                    X, y = prep_time_series(window[:,i], lookback=7, horizon=1)
+                    X, y = prep_time_series(window[:, i], lookback=7, horizon=1)
                     windowResidual[j] = self.nBeats.residualModel.predict(X)
                 self.residuals[i] = windowResidual
-                print(f"\n Residuals for Time Series number {i} collected. \n")
+                logInfo(f"\n Residuals for Time Series number {i} collected. \n")
 
             Dataset.saveData(self.residualsPath, self.residuals)
 
