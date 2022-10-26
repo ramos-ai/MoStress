@@ -27,14 +27,15 @@ from utils.Logger import Logger, LogLevel
 
 logInfo = Logger("NBeatsFeatureExtractor Architecture", LogLevel.INFO)
 
+
 class NBeatsFeatureExtractor(BaseArchitecture):
     def __init__(self, moStressNeuralNetwork):
         self.moStressNeuralNetwork = moStressNeuralNetwork
         self.nBeats = NBeatsModel(lookback=7, horizon=1)
-        self.residualsPath = (
-            os.path.join("data", "preprocessedData", "residuals", "residuals.pickle"),
+        self.residualsPath = os.path.join(
+            "data", "preprocessedData", "residuals", "residuals.pickle"
         )
-        self.nBeatsSavedModelBasePath = {"models", "saved", "nBeats"}
+        self.nBeatsSavedModelBasePath = os.path.join("models", "saved", "nBeats")
         self.residuals = (
             Dataset.loadData(self.residualsPath)
             if "residuals" in os.listdir(os.path.join("data", "preprocessedData"))
@@ -96,6 +97,7 @@ class NBeatsFeatureExtractor(BaseArchitecture):
                 ModelCheckpoint(
                     filepath=trainingCheckpointPath, save_weights_only=True, verbose=0
                 ),
+                logInfo
             ]
 
         return self

@@ -3,13 +3,13 @@ import os
 
 ROOT_DIR = os.path.abspath("./")
 sys.path.append(ROOT_DIR)
-print(sys.path)
 
 from os.path import join
 import json
 from moStress.neuralNetwork.MoStressNeuralNetwork import MoStressNeuralNetwork
 from utils.preprocessingCheckpoint import getPreprocessingCheckpoint
 from models.EvaluateModel import EvaluateModel
+from utils.Logger import Logger, LogLevel
 
 MODEL_T0_TEST = "NBEATS-FEATURE-EXTRACTOR"
 
@@ -27,12 +27,6 @@ dataset = {
 }
 
 moStressNeuralNetwork = MoStressNeuralNetwork(moStressConfigs, dataset, True)
-
-import tensorflow as tf
-if tf.config.list_physical_devices('GPU'):
-  print("TensorFlow **IS** using the GPU")
-else:
-  print("TensorFlow **IS NOT** using the GPU")
 
 moStressNeuralNetwork.execute(
     MODEL_T0_TEST,

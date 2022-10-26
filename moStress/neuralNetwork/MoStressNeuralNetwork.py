@@ -6,7 +6,6 @@ from utils.Logger import Logger, LogLevel
 
 logInfo = Logger("MoStressNeuralNetwork Wrapper", LogLevel.INFO)
 
-
 class MoStressNeuralNetwork:
     def __init__(self, modelOpts, dataset, skipAutoTrainTestSplit=False):
         self.modelOpts = modelOpts
