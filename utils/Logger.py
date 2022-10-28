@@ -8,7 +8,6 @@ class LogLevel(Enum):
     INFO = 1
     ERROR = 2
 
-
 class Logger(keras.callbacks.Callback):
     def __init__(self, component="Logger", logLevel=LogLevel.INFO):
         self.component = component
@@ -20,8 +19,8 @@ class Logger(keras.callbacks.Callback):
         self._baseUrl = f"https://api.telegram.org/bot{self._BOT_TOKEN}/sendMessage?chat_id={self._CHAT_ID}"
         self._outTerminal = sys.stdout
         self._errTerminal = sys.stderr
-        self._stdoutFile = open("stdout.txt", "a")
-        self._stderrFile = open("stderr.txt", "a")
+        # self._stdoutFile = open("stdout.txt", "a")
+        # self._stderrFile = open("stderr.txt", "a")
 
     def __call__(self, message):
         fullMessage = f"{self.logLevel.name}:[{self.component}] {message}"
@@ -41,10 +40,10 @@ class Logger(keras.callbacks.Callback):
     def write(self, message):
         if self.logLevel == LogLevel.INFO:
             self._outTerminal.write(message)
-            self._stdoutFile.write(message)
+            # self._stdoutFile.write(message)
         else:
             self._errTerminal.write(message)
-            self._stderrFile.write(message)
+            # self._stderrFile.write(message)
             # fullMessage = f"{self.logLevel.name}: [{self.component}] {message}"
             # print(fullMessage)
 

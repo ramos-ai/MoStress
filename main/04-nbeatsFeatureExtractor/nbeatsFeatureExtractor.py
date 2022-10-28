@@ -9,14 +9,16 @@ import json
 from moStress.neuralNetwork.MoStressNeuralNetwork import MoStressNeuralNetwork
 from utils.preprocessingCheckpoint import getPreprocessingCheckpoint
 from models.EvaluateModel import EvaluateModel
-from utils.Logger import Logger, LogLevel
+
+sys.stdout = open(join("main", "04-nbeatsFeatureExtractor", "stdout.txt"), "a")
+sys.stderr = open(join("main", "04-nbeatsFeatureExtractor", "stderr.txt"), "a")
 
 MODEL_T0_TEST = "NBEATS-FEATURE-EXTRACTOR"
 
-moStressJsonFilePath = join("configs","moStressConfigs.json")
+moStressJsonFilePath = join("configs", "moStressConfigs.json")
 
-with open(moStressJsonFilePath, 'r') as j:
-        moStressConfigs = json.loads(j.read())
+with open(moStressJsonFilePath, "r") as j:
+    moStressConfigs = json.loads(j.read())
 
 trainData, validationData = getPreprocessingCheckpoint()
 
@@ -28,14 +30,10 @@ dataset = {
 
 moStressNeuralNetwork = MoStressNeuralNetwork(moStressConfigs, dataset, True)
 
-moStressNeuralNetwork.execute(
-    MODEL_T0_TEST,
-    "adam",
-    "sequential"
-)
+moStressNeuralNetwork.execute(MODEL_T0_TEST, "adam", "sequential")
 
 evaluator = EvaluateModel(
-    { "features": validationData["features"], "targets": validationData["targets"] },
+    {"features": validationData["features"], "targets": validationData["targets"]},
     MODEL_T0_TEST,
     moStressNeuralNetwork.model,
 )
