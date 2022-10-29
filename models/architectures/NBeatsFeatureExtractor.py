@@ -33,12 +33,12 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         self.moStressNeuralNetwork = moStressNeuralNetwork
         self.nBeats = NBeatsModel(lookback=7, horizon=1)
         self.residualsPath = os.path.join(
-            "data", "preprocessedData", "residuals", "residuals.pickle"
+            "..", "..", "data", "preprocessedData", "residuals", "residuals.pickle"
         )
         self.nBeatsSavedModelBasePath = os.path.join("models", "saved", "nBeats")
         self.residuals = (
             Dataset.loadData(self.residualsPath)
-            if "residuals" in os.listdir(os.path.join("data", "preprocessedData"))
+            if "residuals" in os.listdir(os.path.join("..", "..", "data", "preprocessedData"))
             else {}
         )
         self._modelName = self.moStressNeuralNetwork._modelName
