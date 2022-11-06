@@ -1,0 +1,9 @@
+pandas==1.4.3
+numpy==1.23.2
+tensorflow==2.9.1
+scikit-learn==1.1.2
+reservoirpy==0.3.5
+keras-beats==0.0.1
+matplotlib==3.5.3
+seaborn==0.11.2
+python-dotenv==0.21.0

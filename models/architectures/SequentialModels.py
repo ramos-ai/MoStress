@@ -71,8 +71,6 @@ class SequentialModels(BaseArchitecture):
     def _setModelCallbacks(self, callbacksList=[]):
         currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         tensorBoardFilesPath = os.path.join(
-            "..",
-            "..",
             "logs",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",
@@ -80,8 +78,6 @@ class SequentialModels(BaseArchitecture):
             currentTime
         )
         trainingCheckpointPath = os.path.join(
-            "..",
-            "..",
             "trainingCheckpoint",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",

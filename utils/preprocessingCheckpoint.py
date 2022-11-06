@@ -2,7 +2,7 @@ import os
 
 from datasets.Dataset import Dataset
 
-saveDataPathRoot = os.path.join("..", "..", "data", "preprocessedData")
+saveDataPathRoot = os.path.join("data", "preprocessedData")
 trainingDataPath = os.path.join(
     saveDataPathRoot, "training", "trainingData.pickle")
 validationDataPath = os.path.join(

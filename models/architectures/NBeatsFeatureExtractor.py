@@ -32,13 +32,16 @@ class NBeatsFeatureExtractor(BaseArchitecture):
     def __init__(self, moStressNeuralNetwork):
         self.moStressNeuralNetwork = moStressNeuralNetwork
         self.nBeats = NBeatsModel(lookback=7, horizon=1)
-        self.residualsPath = os.path.join(
-            "..", "..", "data", "preprocessedData", "residuals", "residuals.pickle"
-        )
+        self.residualsFolderPath = os.path.join("data", "preprocessedData", "residuals")
+        try:
+            os.listdir(self.residualsFolderPath)
+        except:
+            os.makedirs(self.residualsFolderPath)
+        self.residualsPath = os.path.join(self.residualsFolderPath, "residuals.pickle")
         self.nBeatsSavedModelBasePath = os.path.join("models", "saved", "nBeats")
         self.residuals = (
             Dataset.loadData(self.residualsPath)
-            if "residuals" in os.listdir(os.path.join("..", "..", "data", "preprocessedData"))
+            if len(os.listdir(self.residualsFolderPath)) > 0
             else {}
         )
         self._modelName = self.moStressNeuralNetwork._modelName
@@ -97,7 +100,7 @@ class NBeatsFeatureExtractor(BaseArchitecture):
                 ModelCheckpoint(
                     filepath=trainingCheckpointPath, save_weights_only=True, verbose=0
                 ),
-                logInfo
+                logInfo,
             ]
 
         return self

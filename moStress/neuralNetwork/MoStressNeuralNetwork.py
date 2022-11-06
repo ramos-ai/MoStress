@@ -71,7 +71,6 @@ class MoStressNeuralNetwork:
         logInfo("\Saving Model\n")
         self.model._saveModel(
             join(
-                "..",
                 "models",
                 "saved",
                 f"{self._modelName}-{self._optimizerName.upper()}.h5",
