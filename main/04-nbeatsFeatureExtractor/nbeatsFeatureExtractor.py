@@ -23,8 +23,8 @@ with open(moStressJsonFilePath, "r") as j:
 trainData, validationData = getPreprocessingCheckpoint()
 
 dataset = {
-    "features": trainData["features"][:4],
-    "targets": trainData["targets"][:4],
+    "features": trainData["features"],
+    "targets": trainData["targets"],
     "weights": trainData["weights"],
 }
 

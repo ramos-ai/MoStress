@@ -92,7 +92,7 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         if not len(self._callbacks) > 0:
             self._callbacks = [
                 EarlyStopping(
-                    monitor="loss", patience=10, mode="min", min_delta=0.0010
+                    monitor="loss", patience=10, mode="min", min_delta=0.0001
                 ),
                 TensorBoard(
                     log_dir=tensorBoardFilesPath, write_graph=True, histogram_freq=5
