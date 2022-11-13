@@ -27,14 +27,9 @@ for DIR in logs $PREPROCESS_DIR/training $PREPROCESS_DIR/validation; do
     fi
 done 
 
-printf "\n$TAB Creating the Enviroment\n"
-if [[ "$OSTYPE" == "win32" ]]; then
-    python3 -m venv $PWD/.mostress-env
-    $PWD/.mostress-env/Scripts/activate.bat
-else
-    python3 -m venv $PWD/.mostress-env
-    source $PWD/.mostress-env/bin/activate
-fi
+printf "\n$TAB Creating the Environment\n"
+python3 -m venv $PWD/.mostress-env
+source .mostress-env/bin/activate
 
 
 printf "\n$TAB Installing Python Libraries\n"

@@ -45,7 +45,7 @@ If you need to add a new dataset, just create the class which implement it and a
 
 ### 4.1 Building your setup
 
-MoStress has a builder (```MoSB - MoStress Builder```), which can be used for setup preparation. Make sure you have the properly versions for Python, Pip, and Python-Env. With MoStress Builder, your environment is prepared automatically, installing the necessary libraries and creating directories. To run the builder, move to the root directory of the downloaded project and execute one of the following commands:
+MoStress has a builder (**MoSB - MoStress Builder**), which can be used for setup preparation. Make sure you have the properly versions for Python, Pip, and Python-Env. With MoStress Builder, your environment is prepared automatically, installing the necessary libraries and creating directories. To run the builder, move to the root directory of the downloaded project and execute one of the following commands:
 
 ```
 ./builder
@@ -60,11 +60,6 @@ bash builder
 ```
 
 After preparing the environment, just run the environment according to the your operational system. Do not forget to make sure the environment created (```.mostress-env```) is being used by Jupyter or VSCode.
-Windows:
-
-```
-.mostress-env/Scripts/activate.bat
-```
 
 Linux/MacOS
 ```
