@@ -21,11 +21,21 @@ printf "#            MoSB - MoStress Builder             #\n"
 printf "##################################################\n"
 
 printf "\n$TAB Creating Paths\n"
-for DIR in log $PREPROCESS_DIR/training $PREPROCESS_DIR/validation; do
+for DIR in logs $PREPROCESS_DIR/training $PREPROCESS_DIR/validation; do
     if [ ! -d "$PWD/$DIR" ]; then
         mkdir -p "$PWD/$DIR"
     fi
 done 
+
+printf "\n$TAB Creating the Enviroment\n"
+if [[ "$OSTYPE" == "win32" ]]; then
+    python3 -m venv $PWD/.mostress-env
+    $PWD/.mostress-env/Scripts/activate.bat
+else
+    python3 -m venv $PWD/.mostress-env
+    source $PWD/.mostress-env/bin/activate
+fi
+
 
 printf "\n$TAB Installing Python Libraries\n"
 pip install -r $PWD/requirements.txt -q
