@@ -7,6 +7,8 @@ from tensorflow.python import keras
 class LogLevel(Enum):
     INFO = 1
     ERROR = 2
+    WARN = 3
+    DEBUG = 4
 
 class Logger(keras.callbacks.Callback):
     def __init__(self, component="Logger", logLevel=LogLevel.INFO):
