@@ -4,6 +4,7 @@ import pandas as pd
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 from utils.Logger import Logger, LogLevel
+from models.architectures.NBeatsFeatureExtractor import TIME_SERIES_TO_PROCESS
 
 logInfo = Logger("EvaluateModel", LogLevel.INFO)
 
@@ -48,6 +49,7 @@ class EvaluateModel:
         plt.ylabel("Actual Values")
         plt.xlabel("Predicted Values")
         plt.show()
+        plt.savefig(f"models/saved/nBeats/timeSeries{TIME_SERIES_TO_PROCESS}/confusionMatrix.png")
 
     def executeEvaluation(self):
         logInfo(f"Evaluating MoStress with model: {self.modelName}\n")

@@ -1,4 +1,5 @@
 import os
+from datasets.Dataset import Dataset
 
 
 def hasFolder(folderPath):
@@ -7,6 +8,10 @@ def hasFolder(folderPath):
         return True
     except:
         return False
+
+
+def hasDataFile(dataFilePath):
+    return os.path.isfile(dataFilePath)
 
 
 def createFolder(folderPath):
