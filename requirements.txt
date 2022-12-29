@@ -7,3 +7,6 @@ keras-beats==0.0.1
 matplotlib==3.5.3
 seaborn==0.11.2
 python-dotenv==0.21.0
+scipy==1.7.3
+keras==2.10.0
+tensorflow-gpu==2.10.0

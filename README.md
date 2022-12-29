@@ -4,8 +4,8 @@
 * 2. [Prerequisites](#2-prerequisites)
 * 3. [Datasets](#3-datasets)
 * 4. [MoStress](#4-mostress)
-  * 4.1 [Preprocessing Step](#41-preprocessing-step)
-    * 4.1.1 [Config File](#411-config-file)
+  * 4.2 [Preprocessing Step](#41-preprocessing-step)
+    * 4.2.1 [Config File](#411-config-file)
     * 4.2.2 [Implemented Steps](#412-implemented-steps)
   * 4.2 [Neural Network Architecture](#42-neural-network-architecture)
 * 5. [Improvements](#5-improvements)
@@ -43,19 +43,42 @@ If you need to add a new dataset, just create the class which implement it and a
 
 ## 4. MoStress
 
-### 4.1 Preprocessing Step
+### 4.1 Building your setup
 
-#### 4.1.1 Config File
+MoStress has a builder (**MoSB - MoStress Builder**), which can be used for setup preparation. Make sure you have the properly versions for Python, Pip, and Python-Env. With MoStress Builder, your environment is prepared automatically, installing the necessary libraries and creating directories. To run the builder, move to the root directory of the downloaded project and execute one of the following commands:
+
+```
+./builder
+```
+
+```
+sh builder
+```
+
+```
+bash builder
+```
+
+After preparing the environment, just run the environment according to the your operational system. Do not forget to make sure the environment created (```.mostress-env```) is being used by Jupyter or VSCode.
+
+Linux/MacOS
+```
+source $PWD.mostress-env/bin/activate
+```
+
+### 4.2 Preprocessing Step
+
+#### 4.2.1 Config File
 
 On the folder configFiles, there is a ```configs/wesadDatasetOptions.json```, where we set all the parameters needed on the preprocessing.
 
-#### 4.1.2 Implemented Steps
+#### 4.2.2 Implemented Steps
 
 On ```moStress/preprocessing``` we have the main class ```MoStressPreprocessing.py```, which has the call for all the steps that has to be done.
 
 Each step were implemented as classes on ```moStress/preprocessing/implementedSteps``` folder, and they all extends the abstract class: ```moStress/preprocessing/implementedSteps/Steps.py```, so if you want to implement a new step, please, inherit this class also.
 
-### 4.2 Neural Network Architecture
+### 4.3 Neural Network Architecture
 
 The class ```MoStressNeuralNetwork``` basically is a wrapper which takes different models architecture, therefore, to add a new model, create a class which implements your architecture on ```models/architectures```, make your new architecture inherits of the abstract class ```models/architectures/BaseArchitecture.py```, and add the architecture call on ```models/architectures/ModelFactory.py```.
 
