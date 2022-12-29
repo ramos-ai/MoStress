@@ -98,6 +98,7 @@ The regularizer prefix means that we add a Ridge Regularizer and a Max Norm Bias
 Also, after we train the model, we save it on ```models/saved```
 
 NOTE1: we don't save the reservoir model yet.
+
 NOTE2: it is possible that the code of NBEATS-FEATURE-EXTRACTOR throw some error.
 
 ## 5 Improvements
