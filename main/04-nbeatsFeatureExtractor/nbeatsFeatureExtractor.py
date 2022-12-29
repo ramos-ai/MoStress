@@ -12,10 +12,10 @@ from models.EvaluateModel import EvaluateModel
 from datasets.Dataset import Dataset
 from models.architectures.NBeatsFeatureExtractor import TIME_SERIES_TO_PROCESS, NBeatsFeatureExtractor
 
-sys.stdout = open(join("main", "04-nbeatsFeatureExtractor", "classificationReport.txt"), "a")
+sys.stdout = open(join("main", "04-nbeatsFeatureExtractor", "stdout.txt"), "a")
 sys.stderr = open(join("main", "04-nbeatsFeatureExtractor", "stderr.txt"), "a")
 
-MODEL_T0_TEST = F"NBEATS-FEATURE-EXTRACTOR"
+MODEL_T0_TEST = "NBEATS-FEATURE-EXTRACTOR"
 
 moStressJsonFilePath = join("configs", "moStressConfigs.json")
 

@@ -91,12 +91,14 @@ Currently we have the follow architectures implemented:
 * BASELINE-GRU,
 * BASELINE-LSTM,
 * BASELINE-RESERVOIR
+* NBEATS-FEATURE-EXTRACTOR
 
 The regularizer prefix means that we add a Ridge Regularizer and a Max Norm Bias on the output layer of the sequential model.
 
 Also, after we train the model, we save it on ```models/saved```
 
-NOTE: we don't save the reservoir model yet.
+NOTE1: we don't save the reservoir model yet.
+NOTE2: it is possible that the code of NBEATS-FEATURE-EXTRACTOR throw some error.
 
 ## 5 Improvements
 
@@ -234,22 +236,11 @@ classDiagram
     +lstmRegularizerMoStress()
     +gruBaselineMostress()
     +lstmBaselineMostress()
-    -_compileModel()
-    -_setModelCallbacks()
-    -_fitModel()
-    -_makePredictions()
-    -_saveModel()
-    -_printLearningCurves()
   }
   class ReservoirModels {
     +MoStressNeuralNetwork moStressNeuralNetwork
 
     +baseline()
-    -_compileModel()
-    -_setModelCallbacks()
-    -_fitModel()
-    -_makePredictions()
-    -_saveModel()
   }
   class EvaluateModel {
     +Any model
@@ -296,6 +287,107 @@ MoStressNeuralNetwork *-- EvaluateModel: evaluate
 MoStressPreprocessing --|> MoStressNeuralNetwork: input
 SequentialModels ..> BaseArchitecture: inherits
 ReservoirModels ..> BaseArchitecture: inherits
+
+  class GenericBlock {
+    +Number lookback
+    +Number horizon
+    +Number num_neurons
+    +Number block_layers
+
+    +call(inputs)
+  }
+  class TrendBlock {
+    +Number lookback
+    +Number horizon
+    +Number num_neurons
+    +Number block_layers
+    +Number polynomial_term
+
+    +call(inputs)
+  }
+  class SeasonalBlock {
+    +Number lookback
+    +Number horizon
+    +Number num_neurons
+    +Number block_layers
+    +Number num_harmonics
+
+    +call(inputs)
+  }
+  class NBeatsBlock {
+    +String model_type          
+    +Number lookback            
+    +Number horizon             
+    +Number num_generic_neurons 
+    +Number num_generic_stacks  
+    +Number num_generic_layers  
+    +Number num_trend_neurons   
+    +Number num_trend_stacks    
+    +Number num_trend_layers    
+    +Number num_seasonal_neurons
+    +Number num_seasonal_stacks 
+    +Number num_seasonal_layers 
+    +Number num_harmonics       
+    +Number polynomial_term     
+
+    +get_config()
+    +call(inputs)
+  }
+  class NBeatsModel {
+    +String model_type          
+    +Number lookback            
+    +Number horizon             
+    +Number num_generic_neurons 
+    +Number num_generic_stacks  
+    +Number num_generic_layers  
+    +Number num_trend_neurons   
+    +Number num_trend_stacks    
+    +Number num_trend_layers    
+    +Number num_seasonal_neurons
+    +Number num_seasonal_stacks 
+    +Number num_seasonal_layers 
+    +Number num_harmonics       
+    +Number polynomial_term    
+    +String loss
+    +Number learning_rate
+    +Number batch_size
+
+    +get_residual_model()
+    +get_config()
+    +build_layer()
+    +build_model()
+    +compile_model()
+    +fit()
+    +predict()
+    +evaluate()
+  }
+  class NBeatsFeatureExtractor {
+    +MoStressNeuralNetwork moStressNeuralNetwork
+    +NBeatsModel nBeats
+    +String residualsFolderPath
+    +String residualsTrainingFolderPath
+    +String residualsValidationFolderPath
+    +String nBeatsSavedModelBasePath
+    -List callbacks
+    +Boolean hasToCollectResiduals
+    +Boolean hasToFitBasicClassifier
+
+    +classificationModel()
+    -_setModelCallbacksPath()
+    +prepareResidualsDataset(epochs, verbose)
+    -_trainNbeatsModel(epochs, verbose)
+    -_generateResiduals()
+    #collectValidationResiduals()
+  }
+
+  NBeatsBlock *-- GenericBlock: compose
+  NBeatsBlock *-- TrendBlock: compose
+  NBeatsBlock *-- SeasonalBlock: compose
+  NBeatsModel *-- NBeatsBlock: compose
+  NBeatsFeatureExtractor *-- NBeatsModel: compose
+  NBeatsFeatureExtractor ..> BaseArchitecture: inherits
+  ModelFactory --|> NBeatsFeatureExtractor:make
+
 
 ```
 
