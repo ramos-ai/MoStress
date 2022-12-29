@@ -2,4 +2,9 @@ data
 __pycache__
 logs
 trainingCheckpoint
+DailyDelhiClimateTest.csv
+.env
+stdout.txt
+stderr.txt
+models/saved
 .mostress-env

@@ -2,14 +2,14 @@ import datetime
 import os
 
 import matplotlib.pyplot as plt
-from tensorflow.python.keras.callbacks import (EarlyStopping, ModelCheckpoint,
+from tensorflow.keras.callbacks import (EarlyStopping, ModelCheckpoint,
                                                TensorBoard)
-from tensorflow.python.keras.constraints import max_norm
-from tensorflow.python.keras.layers import (GRU, LSTM, Activation, Dense,
+from tensorflow.keras.constraints import max_norm
+from tensorflow.keras.layers import (GRU, LSTM, Activation, Dense,
                                             Dropout, Flatten, GaussianNoise,
                                             LeakyReLU)
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.regularizers import L2
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.regularizers import L2
 
 from models.architectures.BaseArchitecture import BaseArchitecture
 from tensorflow import convert_to_tensor
@@ -71,8 +71,6 @@ class SequentialModels(BaseArchitecture):
     def _setModelCallbacks(self, callbacksList=[]):
         currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         tensorBoardFilesPath = os.path.join(
-            "..",
-            "..",
             "logs",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",
@@ -80,8 +78,6 @@ class SequentialModels(BaseArchitecture):
             currentTime
         )
         trainingCheckpointPath = os.path.join(
-            "..",
-            "..",
             "trainingCheckpoint",
             f"{self.moStressNeuralNetwork._modelName}",
             f"{self.moStressNeuralNetwork._optimizerName}",
