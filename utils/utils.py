@@ -1,5 +1,5 @@
 import os
-from datasets.Dataset import Dataset
+import gc
 
 
 def hasFolder(folderPath):
@@ -17,6 +17,10 @@ def hasDataFile(dataFilePath):
 def createFolder(folderPath):
     if (not hasFolder(folderPath)):
         os.makedirs(folderPath)
+
+def deleteData(data):
+    del(data)
+    gc.collect()
 
 
 if __name__ == "__main__":

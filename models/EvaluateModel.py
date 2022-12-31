@@ -49,12 +49,13 @@ class EvaluateModel:
         plt.ylabel("Actual Values")
         plt.xlabel("Predicted Values")
         plt.show()
-        plt.savefig(f"models/saved/nBeats/timeSeries{TIME_SERIES_TO_PROCESS}/confusionMatrix.png")
+        plt.savefig(f"main/04-nbeatsFeatureExtractor/results/timeSeries{TIME_SERIES_TO_PROCESS}/confusionMatrix.png")
+        
 
     def executeEvaluation(self):
         logInfo(f"Evaluating MoStress with model: {self.modelName}\n")
         logInfo("Classification Report\n")
-        logInfo(
+        logInfo( "\n" + 
             classification_report(
                 self.targetValidation,
                 self.getClassesPredicted(),

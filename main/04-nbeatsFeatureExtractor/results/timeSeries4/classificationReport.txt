@@ -1,80 +1,9 @@
-INFO:[MoStressNeuralNetwork Wrapper] Starting MoStress with model: NBEATS-FEATURE-EXTRACTOR-ADAM.
+               precision    recall  f1-score   support
 
-Model: "sequential"
-_________________________________________________________________
-Layer (type)                 Output Shape              Param #   
-=================================================================
-dense (Dense)                (None, 30, 256)           107520    
-_________________________________________________________________
-re_lu (ReLU)                 (None, 30, 256)           0         
-_________________________________________________________________
-dropout (Dropout)            (None, 30, 256)           0         
-_________________________________________________________________
-dense_1 (Dense)              (None, 30, 128)           32896     
-_________________________________________________________________
-re_lu_1 (ReLU)               (None, 30, 128)           0         
-_________________________________________________________________
-dropout_1 (Dropout)          (None, 30, 128)           0         
-_________________________________________________________________
-flatten (Flatten)            (None, 3840)              0         
-_________________________________________________________________
-dense_2 (Dense)              (None, 3)                 11523     
-_________________________________________________________________
-activation (Activation)      (None, 3)                 0         
-=================================================================
-Total params: 151,939
-Trainable params: 151,939
-Non-trainable params: 0
-_________________________________________________________________
-INFO:[MoStressNeuralNetwork Wrapper] 
-Compiling model with optimizer: adam
+    Baseline     0.6166    0.2378    0.3432      8016
+      Stress     0.5205    0.7787    0.6239      4523
+   Amusement     0.2040    0.4296    0.2766      2423
 
-INFO:[MoStressNeuralNetwork Wrapper] 
-Model Compiled
-
-INFO:[MoStressNeuralNetwork Wrapper] 
-Fitting Model
-
-INFO:[MoStressNeuralNetwork Wrapper] 
-Model Fitted
-
-INFO:[MoStressNeuralNetwork Wrapper] \Saving Model
-
-INFO:[MoStressNeuralNetwork Wrapper] 
-Model Saved
-
-INFO:[MoStressNeuralNetwork Wrapper] 
-Learning Curves
-
-INFO:[MoStressNeuralNetwork Wrapper] 
-
-INFO:[NBeatsFeatureExtractor Architecture] Residuals has already been collected.
-INFO:[NBeatsFeatureExtractor Architecture] Starting collection of validation residual of time series 0
-INFO:[NBeatsFeatureExtractor Architecture] Residual of time series 0, already collected, moving to the next one.
-INFO:[NBeatsFeatureExtractor Architecture] Starting collection of validation residual of time series 1
-INFO:[NBeatsFeatureExtractor Architecture] Residual of time series 1, already collected, moving to the next one.
-INFO:[NBeatsFeatureExtractor Architecture] Starting collection of validation residual of time series 2
-INFO:[NBeatsFeatureExtractor Architecture] Residual of time series 2, already collected, moving to the next one.
-INFO:[NBeatsFeatureExtractor Architecture] Starting collection of validation residual of time series 3
-INFO:[NBeatsFeatureExtractor Architecture] Residual of time series 3, already collected, moving to the next one.
-INFO:[NBeatsFeatureExtractor Architecture] Starting collection of validation residual of time series 4
-INFO:[NBeatsFeatureExtractor Architecture] Residual of time series 4, already collected, moving to the next one.
-INFO:[EvaluateModel] Evaluating MoStress with model: NBEATS-FEATURE-EXTRACTOR
-
-INFO:[EvaluateModel] Classification Report
-
-  1/468 [..............................] - ETA: 3:59 30/468 [>.............................] - ETA: 0s   60/468 [==>...........................] - ETA: 0s 87/468 [====>.........................] - ETA: 0s116/468 [======>.......................] - ETA: 0s143/468 [========>.....................] - ETA: 0s171/468 [=========>....................] - ETA: 0s196/468 [===========>..................] - ETA: 0s226/468 [=============>................] - ETA: 0s255/468 [===============>..............] - ETA: 0s285/468 [=================>............] - ETA: 0s314/468 [===================>..........] - ETA: 0s343/468 [====================>.........] - ETA: 0s373/468 [======================>.......] - ETA: 0s402/468 [========================>.....] - ETA: 0s432/468 [==========================>...] - ETA: 0s463/468 [============================>.] - ETA: 0s468/468 [==============================] - 1s 2ms/step
-INFO:[EvaluateModel]               precision    recall  f1-score   support
-
-    Baseline     0.5917    0.0161    0.0313      8016
-      Stress     0.2990    0.9560    0.4555      4523
-   Amusement     0.0745    0.0087    0.0155      2423
-
-    accuracy                         0.2990     14962
-   macro avg     0.3217    0.3269    0.1675     14962
-weighted avg     0.4195    0.2990    0.1570     14962
-
-INFO:[EvaluateModel] 
-
-INFO:[EvaluateModel] Confusion Matrix
-
+    accuracy                         0.4324     14962
+   macro avg     0.4470    0.4820    0.4146     14962
+weighted avg     0.5207    0.4324    0.4173     14962

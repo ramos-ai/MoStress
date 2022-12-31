@@ -18,10 +18,15 @@ from tensorflow.python.keras.layers import (
     Dropout,
     Flatten,
     ReLU,
+    LSTM,
+    LeakyReLU,
 )
+from tensorflow.python.keras.regularizers import L2
+from tensorflow.python.keras.constraints import max_norm
 from tensorflow.python.keras.models import Sequential
 from tensorflow.keras.models import load_model
 from tensorflow import convert_to_tensor
+from sklearn.utils.class_weight import compute_class_weight
 from models.architectures.NBeats.blocks.NBeatsBlock import NBeatsBlock
 
 from utils.OperateModel import OperateModel
@@ -35,7 +40,9 @@ logInfo = Logger("NBeatsFeatureExtractor Architecture", LogLevel.INFO)
 logWarning = Logger("NBeatsFeatureExtractor Architecture", LogLevel.WARN)
 logDebug = Logger("NBeatsFeatureExtractor Architecture", LogLevel.DEBUG)
 
-TIME_SERIES_TO_PROCESS = 4
+TIME_SERIES_TO_PROCESS = 0
+BATCH_TO_PROCESS = 4
+
 class NBeatsFeatureExtractor(BaseArchitecture):
 
     def __init__(self, moStressNeuralNetwork):
@@ -44,41 +51,63 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         self.residualsFolderPath = os.path.join("data", "preprocessedData",
                                                 "residuals")
         self.residualsTrainingFolderPath = os.path.join("data", "preprocessedData",
-                                        "residuals", "training")
+                                                        "residuals", "training")
         self.residualsValidationFolderPath = os.path.join("data", "preprocessedData",
-                                        "residuals", "validation")
+                                                          "residuals", "validation")
         self.nBeatsSavedModelBasePath = os.path.join("models", "saved",
                                                      "nBeats")
+        self.basicClassifierModelPath = os.path.join(
+            self.nBeatsSavedModelBasePath,
+            f"timeSeries{TIME_SERIES_TO_PROCESS}",
+            f"basicClassifier_{TIME_SERIES_TO_PROCESS}.h5"
+        )
+        self.resultsPath = os.path.join(
+            "main",
+            "04-nbeatsFeatureExtractor",
+            "results"
+        )
+        self.currentTimeSeriesResult = os.path.join(
+            self.resultsPath,
+            f"timeSeries{TIME_SERIES_TO_PROCESS}"
+        )
+        self.trainingDataPath = os.path.join(
+            self.residualsFolderPath,
+            f"timeSeries{TIME_SERIES_TO_PROCESS}",
+            f"batch{BATCH_TO_PROCESS}",
+        )
         createFolder(self.residualsFolderPath)
         createFolder(self.residualsTrainingFolderPath)
         createFolder(self.residualsValidationFolderPath)
         createFolder(self.nBeatsSavedModelBasePath)
-        # self.residuals = (Dataset.loadData(self.residualsPath)
-        #                   if len(os.listdir(self.residualsFolderPath)) >=
-        #                   self.moStressNeuralNetwork._numFeatures else {})
+        createFolder(self.resultsPath)
+        createFolder(self.currentTimeSeriesResult)
+
+        # self.residuals = Dataset.loadData(
+        #     os.path.join(
+        #         self.residualsTrainingFolderPath,
+        #         f"residualTimeSeries_{TIME_SERIES_TO_PROCESS}_{BATCH_TO_PROCESS}.pickle"
+        #     )
+        # )
+
         self._modelName = self.moStressNeuralNetwork._modelName
         self._modelOptimizer = self.moStressNeuralNetwork._optimizerName
         self._callbacks = []
 
         self.hasToCollectResiduals = False
-        self.hasToFitBasicClassifier = False
+        self.hasToFitBasicClassifier = True
 
     ############## ---ARCHITECTURES---##############
 
     def classificationModel(self):
         model = Sequential()
-        model.add(
-            Dense(
-                256, input_shape=(30, 419)
-            )
-        )
+        model.add(Dense(64, input_shape=(30, 419)))
         model.add(ReLU())
-        model.add(Dropout(0.3))
-        model.add(Dense(128))
-        model.add(ReLU())
-        model.add(Dropout(0.3))
+        model.add(Dropout(0.7))
+        # model.add(Dense(32))
+        # model.add(ReLU())
+        # model.add(Dropout(0.3))
         model.add(Flatten())
-        model.add(Dense(self.moStressNeuralNetwork._numClasses))
+        model.add(Dense(self.moStressNeuralNetwork._numClasses, activity_regularizer=L2(0.000001), bias_constraint=max_norm(3)))
         model.add(Activation("softmax"))
         model.summary()
 
@@ -93,8 +122,6 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         loss="sparse_categorical_crossentropy",
         metrics=["sparse_categorical_accuracy"],
     ):
-        if not self.hasToFitBasicClassifier:
-            return
         self.nBeats.compile_model()
         self.model.compile(
             optimizer=self.moStressNeuralNetwork._optimizerName,
@@ -104,12 +131,11 @@ class NBeatsFeatureExtractor(BaseArchitecture):
 
     def _setModelCallbacks(self):
 
-        tensorBoardFilesPath, trainingCheckpointPath = self._setModelCallbacksPath(
-        )
+        tensorBoardFilesPath, trainingCheckpointPath = self._setModelCallbacksPath()
 
         if not len(self._callbacks) > 0:
             self._callbacks = [
-                EarlyStopping(monitor="loss",
+                EarlyStopping(monitor="val_loss",
                               patience=30,
                               mode="min",
                               min_delta=0.0001),
@@ -125,27 +151,30 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         return self
 
     def _fitModel(self, epochs=100, shuffle=False, testSize=0.4):
-        if(self.hasToCollectResiduals):
+        if (self.hasToCollectResiduals):
             self._setModelCallbacks()
             self.prepareResidualsDataset()
 
-        if not self.hasToFitBasicClassifier:
-            self.model = load_model(
-                os.path.join(
-                    self.nBeatsSavedModelBasePath,
-                    f"timeSeries{TIME_SERIES_TO_PROCESS}",
-                    f"basicClassifier_{TIME_SERIES_TO_PROCESS}.h5"
-                )
-            )
-            return
+        if self.hasToFitBasicClassifier:
+            if hasDataFile(self.basicClassifierModelPath):
+                self.model = load_model(self.basicClassifierModelPath)
+        
+        # qtdWindows = len(self.moStressNeuralNetwork._allTrainTargets)
+        # maxIndex = qtdWindows - 1
+        # indexSlicer = maxIndex//3
+        # targets = self.moStressNeuralNetwork._allTrainTargets[(BATCH_TO_PROCESS-1)*indexSlicer : (BATCH_TO_PROCESS)*indexSlicer]
 
-        xTrain, xTest, yTrain, yTest = OperateModel._getTensorData(
-            self.residuals, self.moStressNeuralNetwork._allTrainTargets,
-            testSize)
+        features = Dataset.loadData(os.path.join(self.trainingDataPath, "features.pickle"))
+        targets = Dataset.loadData(os.path.join(self.trainingDataPath, "targets.pickle"))
 
-        self._modelName = "BASIC-CLASSIFIER"
+        xTrain, xTest, yTrain, yTest = OperateModel._getTensorData(features, targets, testSize)
+
+        self._modelName = f"BASIC-CLASSIFIER-TIME-SERIES-{TIME_SERIES_TO_PROCESS}-{BATCH_TO_PROCESS}"
         self._callbacks = []
         self._setModelCallbacks()
+
+        weights = compute_class_weight(class_weight="balanced", classes=np.unique(targets), y=targets)
+        weights = {i: weights[i] for i in range(len(weights))}
 
         self.moStressNeuralNetwork.history = self.model.fit(
             x=xTrain,
@@ -153,7 +182,7 @@ class NBeatsFeatureExtractor(BaseArchitecture):
             validation_data=(xTest, yTest),
             epochs=epochs,
             shuffle=shuffle,
-            class_weight=self.moStressNeuralNetwork.weights,
+            class_weight=weights,
             callbacks=self._callbacks,
         )
 
@@ -161,13 +190,18 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         return self.model.predict(x=convert_to_tensor(inputData))
 
     def _saveModel(self, path):
-        if not self.hasToFitBasicClassifier:
+        if hasDataFile(self.basicClassifierModelPath):
             return
+        path = self.basicClassifierModelPath
         self.model.save(path)
 
     def _printLearningCurves(self, loss="Sparse Categorical Crossentropy"):
-        if not self.hasToFitBasicClassifier:
-            return
+        if self.hasToFitBasicClassifier:
+            self._getLossLearningCurve(loss)
+            self._getMetricLearningCurve()
+        
+
+    def _getLossLearningCurve(self, loss):
         plt.figure(figsize=(30, 15))
         plt.plot(
             self.moStressNeuralNetwork.history.history["loss"],
@@ -185,7 +219,29 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         plt.legend(loc="upper left")
         plt.grid(True)
         plt.show()
-        plt.savefig("confusionMatrix.png")
+        plt.savefig(os.path.join(self.currentTimeSeriesResult, f"lossLearningCurve_{TIME_SERIES_TO_PROCESS}_{BATCH_TO_PROCESS}"))
+    
+    def _getMetricLearningCurve(self):
+        plt.figure(figsize=(30, 15))
+        plt.plot(
+            self.moStressNeuralNetwork.history.history["sparse_categorical_accuracy"],
+            label="Sparse Categorical Accuracy" + " (Training Data)",
+        )
+        plt.plot(
+            self.moStressNeuralNetwork.history.history["val_sparse_categorical_accuracy"],
+            label= "Sparse Categorical Accuracy" + " (Testing Data)",
+            marker=".",
+            markersize=20,
+        )
+        plt.title("Sparse Categorical Accuracy")
+        plt.ylabel(f"Sparse Categorical Accuracy value")
+        plt.xlabel("No. epoch")
+        plt.legend(loc="upper left")
+        plt.grid(True)
+        plt.show()
+        plt.savefig(os.path.join(self.currentTimeSeriesResult, f"metricLearningCurve_{TIME_SERIES_TO_PROCESS}_{BATCH_TO_PROCESS}"))
+    
+
 
     def _setModelCallbacksPath(self):
         currentTime = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -264,12 +320,15 @@ class NBeatsFeatureExtractor(BaseArchitecture):
 
             logInfo(f"\n Getting Residuals for Time Series number {i}. \n")
             try:
-                logDebug(f"\n Checking if the residuals of Time Series number {i} exists. \n")
+                logDebug(
+                    f"\n Checking if the residuals of Time Series number {i} exists. \n")
                 try:
                     windowResidual = Dataset.loadData(savedResidualPath)
-                    logDebug(f"\n Residuals of of Time Series number {i} already exists. Moving to the next residual. \n")
+                    logDebug(
+                        f"\n Residuals of of Time Series number {i} already exists. Moving to the next residual. \n")
                 except:
-                    logDebug(f"\n Residuals of of Time Series number {i} don't exists. Starting collection. \n")
+                    logDebug(
+                        f"\n Residuals of of Time Series number {i} don't exists. Starting collection. \n")
                     residualModel = load_model(timeSeriesModelPath,
                                                {'NBeatsBlock': NBeatsBlock})
 
@@ -309,19 +368,21 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         )
 
         if len(os.listdir(folderToSaveDataPath)) >= 5:
-            logInfo("Residuals has already been collected.")
-        
+            logInfo("Residuals has been already collected.")
+            return
+
         def adjustTimeSeries(npArray):
             timeSeries = np.concatenate(
                 [npArray[0, :-1], npArray[:, -1]], 0
             )
             return convert_to_tensor(timeSeries)
-        
+
         def getListOfTensor(windowList):
             return pd.DataFrame(windowList).applymap(adjustTimeSeries).to_numpy().tolist()
 
         for timeSeriesIndex in range(residualFeatures[0].shape[1]):
-            logInfo(f"Starting collection of validation residual of time series {timeSeriesIndex}")
+            logInfo(
+                f"Starting collection of validation residual of time series {timeSeriesIndex}")
             windowResidual = []
             modelPath = os.path.join(
                 nBeatsFolderPath,
@@ -329,22 +390,24 @@ class NBeatsFeatureExtractor(BaseArchitecture):
                 f"residualModel_{timeSeriesIndex}.h5"
             )
             residualPath = os.path.join(
-                    folderToSaveDataPath,
-                    f"residualTimeSeries_{timeSeriesIndex}.pickle"
-                )
+                folderToSaveDataPath,
+                f"residualTimeSeries_{timeSeriesIndex}.pickle"
+            )
             if (hasDataFile(residualPath)):
-                logInfo(f"Residual of time series {timeSeriesIndex}, already collected, moving to the next one.")
+                logInfo(
+                    f"Residual of time series {timeSeriesIndex}, already collected, moving to the next one.")
                 continue
             model = load_model(modelPath, {'NBeatsBlock': NBeatsBlock})
             logDebug(f"Model loaded")
 
             for window in residualFeatures:
-                X, _ = prep_time_series(window[:, timeSeriesIndex],lookback=7,horizon=1)
+                X, _ = prep_time_series(
+                    window[:, timeSeriesIndex], lookback=7, horizon=1)
                 windowResidual.append(model.predict(X))
-                del(X)
+                del (X)
                 gc.collect()
             residualData = getListOfTensor(windowResidual)
-            del(windowResidual)
+            del (windowResidual)
             gc.collect()
             logInfo(f"Saving residual.")
             Dataset.saveData(
@@ -352,9 +415,5 @@ class NBeatsFeatureExtractor(BaseArchitecture):
                 residualData
             )
             logInfo(f"Residual Saved.")
-            del(residualData)
+            del (residualData)
             gc.collect()
-
-
-
-        
