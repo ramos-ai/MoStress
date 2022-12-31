@@ -1,0 +1,45 @@
+# Classification Report
+
+```txt
+
+                precision    recall  f1-score   support
+
+    Baseline     0.6981    0.4800    0.5689      8016
+      Stress     0.7743    0.3657    0.4968      4523
+   Amusement     0.1520    0.4589    0.2284      2423
+
+    accuracy                         0.4421     14962
+   macro avg     0.5415    0.4349    0.4314     14962
+weighted avg     0.6327    0.4421    0.4920     14962
+
+```
+
+# Confusion Matrix
+
+![ConfusionMatrix](confusionMatrix.png)
+
+# NLP Learning Curve
+
+## Batch 1
+
+| Sparse Categorical Cross Entropy      | Sparse Categorical Accuracy |
+| ----------- | ----------- |
+| ![SparseCategoricalCrossEntropy](lossLearningCurve_2_1.png)      | ![SparseCategoricalAccuracy](metricLearningCurve_2_1.png)       |
+
+## Batch 2
+
+| Sparse Categorical Cross Entropy      | Sparse Categorical Accuracy |
+| ----------- | ----------- |
+| ![SparseCategoricalCrossEntropy](lossLearningCurve_2_2.png)      | ![SparseCategoricalAccuracy](metricLearningCurve_2_2.png)       |
+
+## Batch 3
+
+| Sparse Categorical Cross Entropy      | Sparse Categorical Accuracy |
+| ----------- | ----------- |
+| ![SparseCategoricalCrossEntropy](lossLearningCurve_2_3.png)      | ![SparseCategoricalAccuracy](metricLearningCurve_2_3.png)       |
+
+## Batch 4
+
+| Sparse Categorical Cross Entropy      | Sparse Categorical Accuracy |
+| ----------- | ----------- |
+| ![SparseCategoricalCrossEntropy](lossLearningCurve_2_4.png)      | ![SparseCategoricalAccuracy](metricLearningCurve_2_4.png)       |
