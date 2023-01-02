@@ -22,73 +22,7 @@ The resume of MoStress is shown on the image and the diagram below below:
 
 ![MoStress](./static/MoStressFull.jpg)
 
-```plantuml
-@startuml MoStressTrainingArchiteture
-left to right direction
-
-mainframe MoStress
-
-database "Stress Data <WESAD>" as wesad
-database "Pre-Processed Data" as checkpoint {
-    storage "Traing Data - 14 Subjects Data" as traing
-    storage "Validation Data - 1 Subjects Data" as validation
-}
-
-queue DataPreprocessing {
-    usecase "Fourier Analysis" as fourier
-    usecase "Rolling Z-Score" as normalization
-    usecase "Windows Labelling" as labeling
-    usecase "Weights Calculation" as weights
-}
-
-card TrainigLoop as TL1 {
-    rectangle Models {
-        agent "Recurrent Neural Network" as rnn
-        agent "Reservoir" as reservoir
-        agent "NBeats" as nbeats
-    }
-}
-
-card ModelsResults {
-    collections Predictions
-    card "Evaluation Data" {
-        collections "Learnig Curves"
-        collections "Confusion Matrix"
-    }
-}
-
-hexagon TrainedModels
-
-
-frame NBeatsFeatureExtractor {
-    database "Residual Data" as residualData {
-        storage "Training Residuals" as trainigResidualas
-        storage "Validation Residuals" as validationResidualas
-    }
-    card TrainingLoop as TL2 {
-        agent "Simple Neural Network" as mlp
-    }
-    hexagon SimpleModelTrained
-    nbeats --> residualData: generate
-    trainigResidualas --> mlp: input
-    validationResidualas --> SimpleModelTrained: input
-    mlp --> SimpleModelTrained: generate
-    SimpleModelTrained --> ModelsResults: predict
-}
-
-wesad --> DataPreprocessing: input
-fourier --> normalization
-normalization --> labeling
-labeling --> weights
-DataPreprocessing --> checkpoint: save
-traing --> Models: input
-validation --> nbeats: input
-rnn --> TrainedModels: generate
-reservoir --> TrainedModels: generate
-validation --> TrainedModels: input
-TrainedModels --> ModelsResults: predict
-@enduml
-```
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ramos-ai/MoStress/blob/master/static/puml/MoStressTrainingArchitecture.iuml)
 
 The code with the results can be found on folder ```main```, and the folder ```experiments``` we have testing of new features.
 
