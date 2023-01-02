@@ -22,7 +22,7 @@ The resume of MoStress is shown on the image and the diagram below below:
 
 ![MoStress](./static/MoStressFull.jpg)
 
-![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ramos-ai/MoStress/blob/master/static/puml/MoStressTrainingArchitecture.iuml)
+![MoStressTrainingArchitecture](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ramos-ai/MoStress/master/static/uml/MoStressTrainingArchitecture.iuml)
 
 The code with the results can be found on folder ```main```, and the folder ```experiments``` we have testing of new features.
 
