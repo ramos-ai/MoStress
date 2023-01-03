@@ -1,7 +1,34 @@
 @startuml MoStressTrainingArchiteture
+!theme plain
+
 left to right direction
 
 mainframe MoStress
+
+skinparam database {
+    backgroundColor #fefece
+}
+
+skinparam usecase {
+    borderColor #be475d
+    backgroundColor #fefece
+    ArrowColor #be475d
+}
+
+skinparam agent {
+    borderColor #be475d
+    backgroundColor #fefece
+}
+
+skinparam hexagon {
+    borderColor #be475d
+    backgroundColor #fefece
+}
+
+skinparam collections {
+    borderColor #be475d
+    backgroundColor #fefece
+}
 
 database "Stress Data <WESAD>" as wesad
 database "Pre-Processed Data" as checkpoint {
