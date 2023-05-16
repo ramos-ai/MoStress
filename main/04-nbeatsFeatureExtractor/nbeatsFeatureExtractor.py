@@ -8,9 +8,11 @@ from os.path import join
 import json
 from moStress.neuralNetwork.MoStressNeuralNetwork import MoStressNeuralNetwork
 from utils.preprocessingCheckpoint import getPreprocessingCheckpoint
+import gc
 from models.EvaluateModel import EvaluateModel
 from datasets.Dataset import Dataset
 from models.architectures.NBeatsFeatureExtractor import TIME_SERIES_TO_PROCESS, NBeatsFeatureExtractor
+import numpy as np
 
 sys.stdout = open(join("main", "04-nbeatsFeatureExtractor", "stdout.txt"), "a")
 sys.stderr = open(join("main", "04-nbeatsFeatureExtractor", "stderr.txt"), "a")
@@ -31,6 +33,12 @@ dataset = {
 }
 
 moStressNeuralNetwork = MoStressNeuralNetwork(moStressConfigs, dataset, True)
+if TIME_SERIES_TO_PROCESS in [7, 8]:
+    moStressNeuralNetwork._numClasses = 2
+
+del(dataset)
+gc.collect()
+# deleteData(dataset)
 
 moStressNeuralNetwork.execute(MODEL_T0_TEST, "adam", "sequential")
 
@@ -44,11 +52,17 @@ validationData["features"] = Dataset.loadData(
         f"residualTimeSeries_{TIME_SERIES_TO_PROCESS}.pickle"
     )
 )
+if TIME_SERIES_TO_PROCESS in [7, 8]:
+    npTargets = np.array(validationData["targets"])
+    npTargets[np.where(npTargets != 1)] = 0
+    validationData["targets"] = npTargets.tolist()
+
 
 evaluator = EvaluateModel(
     {"features": validationData["features"], "targets": validationData["targets"]},
     MODEL_T0_TEST,
     moStressNeuralNetwork.model,
+    ["Stress", "No Stress"] if TIME_SERIES_TO_PROCESS in [7, 8] else ["Baseline", "Stress", "Amusement"]
 )
 
 evaluator.executeEvaluation()

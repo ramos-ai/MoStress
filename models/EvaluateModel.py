@@ -23,6 +23,7 @@ class EvaluateModel:
         self.targetValidation = validationData["targets"]
         self.classes = classes
         self.predictions = None
+        self.isBinaryClassification = True if len(classes) == 2 else False
 
     def _makePredictions(self):
         if self.predictions is None:
@@ -30,7 +31,7 @@ class EvaluateModel:
         return self.predictions
 
     def getClassesPredicted(self):
-        return [np.argmax(probabilities) for probabilities in self._makePredictions()]
+        return [np.argmax(probabilities) if not self.isBinaryClassification else 0 if probabilities < 0.5 else 1 for probabilities in self._makePredictions()]
 
     def _getConfusionMatrix(self):
         return confusion_matrix(self.targetValidation, self.getClassesPredicted())

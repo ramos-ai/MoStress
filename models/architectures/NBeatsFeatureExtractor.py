@@ -9,8 +9,9 @@ from models.architectures.BaseArchitecture import BaseArchitecture
 from models.architectures.NBeats.NBeatsModel import NBeatsModel
 from tensorflow.python.keras.callbacks import (
     EarlyStopping,
-    ModelCheckpoint,
     TensorBoard,
+    LearningRateScheduler,
+    ReduceLROnPlateau,
 )
 from tensorflow.python.keras.layers import (
     Activation,
@@ -18,8 +19,9 @@ from tensorflow.python.keras.layers import (
     Dropout,
     Flatten,
     ReLU,
+    LeakyReLU
 )
-from tensorflow.python.keras.regularizers import L2
+from tensorflow.python.keras.regularizers import L2, L1
 from tensorflow.python.keras.constraints import max_norm
 from tensorflow.python.keras.models import Sequential
 from tensorflow.keras.models import load_model
@@ -29,18 +31,19 @@ from models.architectures.NBeats.blocks.NBeatsBlock import NBeatsBlock
 
 from utils.OperateModel import OperateModel
 from utils.Logger import Logger, LogLevel
-from utils.utils import createFolder, hasDataFile, deleteData
+from utils.utils import createFolder, hasDataFile
 import pandas as pd
 import numpy as np
 import gc
+import math
 
 logInfo = Logger("NBeatsFeatureExtractor Architecture", LogLevel.INFO)
 logWarning = Logger("NBeatsFeatureExtractor Architecture", LogLevel.WARN)
 logDebug = Logger("NBeatsFeatureExtractor Architecture", LogLevel.DEBUG)
 
 ROUNDS = 5
-BATCH_TO_PROCESS = 4
-TIME_SERIES_TO_PROCESS = 0
+BATCH_TO_PROCESS = 16
+TIME_SERIES_TO_PROCESS = 7
 
 class NBeatsFeatureExtractor(BaseArchitecture):
 
@@ -88,6 +91,9 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         #     )
         # )
 
+        if TIME_SERIES_TO_PROCESS in [7, 8]:
+            self.isBinaryClassification = True
+
         self._modelName = self.moStressNeuralNetwork._modelName
         self._modelOptimizer = self.moStressNeuralNetwork._optimizerName
         self._callbacks = []
@@ -99,15 +105,20 @@ class NBeatsFeatureExtractor(BaseArchitecture):
 
     def classificationModel(self):
         model = Sequential()
-        model.add(Dense(64, input_shape=(30, 419)))
+        model.add(Dense(32, input_shape=(5 if TIME_SERIES_TO_PROCESS == 5 or TIME_SERIES_TO_PROCESS == 7 else 2, 30, 419)))
         model.add(ReLU())
         model.add(Dropout(0.7))
-        # model.add(Dense(32))
-        # model.add(ReLU())
-        # model.add(Dropout(0.3))
+        # model.add(Dense(64, activity_regularizer=L2(0.00000001), bias_constraint=max_norm(1)))
+        # model.add(LeakyReLU(0.2))
+        # model.add(Dropout(0.9)) 0.9 to high
+        # model.add(Flatten())
+        # model.add(Dense(32, activity_regularizer=L2(0.0000001), bias_constraint=max_norm(1)))
+        # model.add(LeakyReLU(0.5))
+        # model.add(GaussianNoise(0.5))
+        # model.add(Dropout(0.5))
         model.add(Flatten())
-        model.add(Dense(self.moStressNeuralNetwork._numClasses, activity_regularizer=L2(0.000001), bias_constraint=max_norm(3)))
-        model.add(Activation("softmax"))
+        model.add(Dense(1, activity_regularizer=L2(0.000001), bias_constraint=max_norm(1))) # 2 neurons on the output
+        model.add(Activation("sigmoid" if self.isBinaryClassification else "softmax"))
         model.summary()
 
         self.model = model
@@ -124,31 +135,38 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         self.nBeats.compile_model()
         self.model.compile(
             optimizer=self.moStressNeuralNetwork._optimizerName,
-            loss=loss,
-            metrics=metrics,
+            loss= "binary_crossentropy" if self.isBinaryClassification else loss,
+            metrics= "accuracy" if self.isBinaryClassification else metrics, # balanced accuracy
         )
 
     def _setModelCallbacks(self):
+
+        def step_decay(epoch):
+            initial_lrate = 0.001
+            drop = 0.5
+            epochs_drop = 10.0
+            lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
+            return lrate
 
         tensorBoardFilesPath, trainingCheckpointPath = self._setModelCallbacksPath()
 
         if not len(self._callbacks) > 0:
             self._callbacks = [
-                EarlyStopping(monitor="val_loss",
-                              patience=20,
-                              mode="min"),
+                EarlyStopping(monitor= "val_accuracy" if self.isBinaryClassification else "val_sparse_categorical_accuracy",
+                              patience=30,
+                              mode="max"),
                 TensorBoard(log_dir=tensorBoardFilesPath,
                             write_graph=True,
                             histogram_freq=5),
-                ModelCheckpoint(filepath=trainingCheckpointPath,
-                                save_weights_only=True,
-                                verbose=0),
+                LearningRateScheduler(step_decay),
+                ReduceLROnPlateau(monitor="val_accuracy" if self.isBinaryClassification else "val_sparse_categorical_accuracy", factor=0.5,
+                              patience=15, mode="max"),
                 logInfo,
             ]
 
         return self
 
-    def _fitModel(self, epochs=100, shuffle=False, testSize=0.4):
+    def _fitModel(self, epochs=200, shuffle=False, testSize=0.4):
         if (self.hasToCollectResiduals):
             self._setModelCallbacks()
             self.prepareResidualsDataset()
@@ -159,60 +177,74 @@ class NBeatsFeatureExtractor(BaseArchitecture):
         # indexSlicer = maxIndex//3
         # targets = self.moStressNeuralNetwork._allTrainTargets[(BATCH_TO_PROCESS-1)*indexSlicer : (BATCH_TO_PROCESS)*indexSlicer]
 
-        for roundIndex in range(ROUNDS):
-            logInfo(f"Starting Round {roundIndex + 1}")
-            for batchIndex in range(BATCH_TO_PROCESS):
-                logInfo(f"Starting Batch {batchIndex + 1}")
-                trainingDataPath = os.path.join(
-                self.residualsFolderPath,
-                f"timeSeries{TIME_SERIES_TO_PROCESS}",
-                f"batch{batchIndex+1}",
-                )
-
-                if self.hasToFitBasicClassifier:
-                    if hasDataFile(self.basicClassifierModelPath):
-                        self.model = load_model(self.basicClassifierModelPath)
-
-                features = Dataset.loadData(os.path.join(trainingDataPath, "features.pickle"))
-                targets = Dataset.loadData(os.path.join(trainingDataPath, "targets.pickle"))
-
-                xTrain, xTest, yTrain, yTest = OperateModel._getTensorData(features, targets, testSize)
-                deleteData(features)
-                deleteData(targets)
-
-                self._modelName = f"BASIC-CLASSIFIER-TIME-SERIES-{TIME_SERIES_TO_PROCESS}-{batchIndex}"
-                self._callbacks = []
-                self._setModelCallbacks()
-
-                weights = compute_class_weight(class_weight="balanced", classes=np.unique(targets), y=targets)
-                weights = {i: weights[i] for i in range(len(weights))}
-
-                self.moStressNeuralNetwork.history = self.model.fit(
-                    x=xTrain,
-                    y=yTrain,
-                    validation_data=(xTest, yTest),
-                    epochs=epochs,
-                    shuffle=shuffle,
-                    class_weight=weights,
-                    callbacks=self._callbacks,
-                )
-                deleteData(xTrain)
-                deleteData(yTrain)
-                deleteData(xTest)
-                deleteData(yTest)
-
-                pathToSaveHistory = os.path.join(
-                    self.nBeatsSavedModelBasePath,
+        if(self.hasToFitBasicClassifier):
+            for roundIndex in range(ROUNDS):
+                logInfo(f"Starting Round {roundIndex + 1}")
+                for batchIndex in range(BATCH_TO_PROCESS):
+                    logInfo(f"Starting Batch {batchIndex + 1}")
+                    trainingDataPath = os.path.join(
+                    self.residualsFolderPath,
                     f"timeSeries{TIME_SERIES_TO_PROCESS}",
-                    f"history_{batchIndex+1}_{roundIndex+1}.pickle"
-                )
+                    f"batch{batchIndex+1}",
+                    )
 
-                Dataset.saveData(
-                    pathToSaveHistory,
-                    self.moStressNeuralNetwork.history.history
-                )
+                    if self.hasToFitBasicClassifier:
+                        if hasDataFile(self.basicClassifierModelPath):
+                            self.model = load_model(self.basicClassifierModelPath)
 
-                self.model.save(self.basicClassifierModelPath)
+                    features = Dataset.loadData(os.path.join(trainingDataPath, "features.pickle"))
+                    targets = Dataset.loadData(os.path.join(trainingDataPath, "targets.pickle"))
+
+                    xTrain, xTest, yTrain, yTest = OperateModel._getTensorData(features, targets, testSize)
+
+                    # deleteData(features)
+                    # deleteData(targets)
+
+                    self._modelName = f"BASIC-CLASSIFIER-TIME-SERIES-{TIME_SERIES_TO_PROCESS}-{batchIndex}"
+                    self._callbacks = []
+                    self._setModelCallbacks()
+
+                    weights = compute_class_weight(class_weight="balanced", classes=np.unique(targets), y=targets)
+                    weights = {i: weights[i] for i in range(len(weights))}
+
+                    del(features)
+                    del(targets)
+                    gc.collect()
+
+                    self.moStressNeuralNetwork.history = self.model.fit(
+                        x=xTrain,
+                        y=yTrain,
+                        validation_data=(xTest, yTest),
+                        epochs=epochs,
+                        shuffle=shuffle,
+                        class_weight=weights,
+                        callbacks=self._callbacks,
+                    )
+
+                    del(xTrain)
+                    del(yTrain)
+                    del(xTest)
+                    del(yTest)
+                    del(weights)
+                    gc.collect()
+                    # deleteData(xTrain)
+                    # deleteData(yTrain)
+                    # deleteData(xTest)
+                    # deleteData(yTest)
+
+                    pathToSaveHistory = os.path.join(
+                        self.nBeatsSavedModelBasePath,
+                        f"timeSeries{TIME_SERIES_TO_PROCESS}",
+                        f"history_{batchIndex+1}_{roundIndex+1}.pickle"
+                    )
+
+                    Dataset.saveData(
+                        pathToSaveHistory,
+                        self.moStressNeuralNetwork.history.history
+                    )
+
+                    
+                    self.model.save(self.basicClassifierModelPath)
 
     def _makePredictions(self, inputData):
         return self.model.predict(x=convert_to_tensor(inputData))
@@ -252,11 +284,11 @@ class NBeatsFeatureExtractor(BaseArchitecture):
     def _getMetricLearningCurve(self):
         plt.figure(figsize=(30, 15))
         plt.plot(
-            self.moStressNeuralNetwork.history.history["sparse_categorical_accuracy"],
+            self.moStressNeuralNetwork.history.history[ "accuracy" if self.isBinaryClassification else "sparse_categorical_accuracy"],
             label="Sparse Categorical Accuracy" + " (Training Data)",
         )
         plt.plot(
-            self.moStressNeuralNetwork.history.history["val_sparse_categorical_accuracy"],
+            self.moStressNeuralNetwork.history.history[ "val_accuracy" if self.isBinaryClassification else "val_sparse_categorical_accuracy" ],
             label= "Sparse Categorical Accuracy" + " (Testing Data)",
             marker=".",
             markersize=20,
