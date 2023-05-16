@@ -244,7 +244,7 @@ classDiagram
     +Dictionary dataOpts
     +Any data
 
-    -_getLabel(labelCode~int | string~) String
+    -_getLabel(labelCode~int|string~) String
     -_getData() Any
   }
   class Steps {
