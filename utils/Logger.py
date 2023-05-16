@@ -52,7 +52,7 @@ class Logger(keras.callbacks.Callback):
         self._sendMessageToTelegramGroup(msg)
 
     def on_epoch_end(self, epoch, logs=None):
-        msg = f"Epoch number {epoch} finished with loss: {logs['loss']}"
+        msg = f"Epoch number {epoch} finished with loss: {logs['loss']} and val_loss: {logs['val_loss']}"
         print(msg)
         self._sendMessageToTelegramGroup(msg)
 
