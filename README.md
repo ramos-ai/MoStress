@@ -20,16 +20,12 @@ This is the implementation of MoStress: a sequence model for stress classificati
 
 The resume of MoStress is shown on the image and the diagram below below:
 
-
 ```mermaid
-
----
-title: MoStress Overview
----
 
     flowchart LR
 
         %%{init: {'flowchart' : {'curve' : 'linear'}}}%%
+        %%{init: {'theme':'neutral'}}%%
 
         classDef circles fill:#DAE8FC
         classDef circlesGreen fill:#D5E8D4
@@ -67,6 +63,7 @@ title: MoStress Overview
     flowchart LR
 
     %%{init: {'flowchart' : {'curve' : 'linear'}}}%%
+    %%{init: {'theme':'neutral'}}%%
 
     classDef circles fill:#DAE8FC
     classDef circlesGreen fill:#D5E8D4
