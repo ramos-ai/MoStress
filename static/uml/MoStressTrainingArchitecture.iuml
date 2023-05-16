@@ -1,6 +1,10 @@
 @startuml MoStressTrainingArchiteture
 !theme plain
 
+skinparam defaultFontSize 60
+skinparam ArrowThickness 5
+skinparam FrameFontSize 60
+
 left to right direction
 
 mainframe MoStress
